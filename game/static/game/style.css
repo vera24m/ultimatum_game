@@ -1,0 +1,32 @@
+/* XXX: Clean this up!!!!*/
+
+body {
+    background-color: #dc8;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+  background-color: #333;
+  height: 150px;
+}
+
+#top {
+  width: 100%;
+  background-color: #dc8;
+  height: 50px;
+}
+
+#center {
+  background-color: #eec;
+  min-height: 600px; /* for modern browsers */
+  height: auto !important; /* for modern browsers */
+  height: 600px; /* for IE5.x and IE6 */
+}
+
+#footer {
+  clear: both;
+  background-color: #333;
+  height: 100px;
+}
