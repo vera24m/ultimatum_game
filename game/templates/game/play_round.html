@@ -1,0 +1,11 @@
+{% include "game/header.html" %}
+
+<!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_showoffer.php -->
+<!-- Summarize outcome if last round. -->
+
+<form action="{% url 'game:end_round' %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Next page" />
+</form>
+
+{% include "game/footer.html" %}

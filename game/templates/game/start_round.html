@@ -1,0 +1,10 @@
+{% include "game/header.html" %}
+
+<!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_showopponent.php -->
+
+<form action="{% url 'game:play_round' %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Next page" />
+</form>
+
+{% include "game/footer.html" %}

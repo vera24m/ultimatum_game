@@ -37,7 +37,6 @@ consent by pressing the 'Start' button at the bottom of the page.</p>
 <form action="{% url 'game:view_instructions' %}" method="POST">
   {% csrf_token %}
   <input type="submit" value="Start" />
-<!-- XXX: Add start button here. -->
 </form>
 
 {% include "game/footer.html" %}
