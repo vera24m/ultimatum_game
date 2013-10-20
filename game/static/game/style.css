@@ -1,32 +1,49 @@
-/* XXX: Clean this up!!!!*/
-
 body {
-    background-color: #dc8;
-    font-size: 16px;
-    margin: 0;
-    padding: 0;
+  background-color: #EEE;
+  margin-left: auto;
+  margin-right: auto;
+  width: 640px;
 }
 
-#header {
-  background-color: #333;
-  height: 150px;
+#offer_section {
+  border: dotted;
+  height: 6em;
+  margin: 2em auto 2em auto;
+  position: relative;
+  width: 30em;
+  text-align: center;
 }
-
-#top {
+#click_request, #click_response {
+  margin-top: -3em;
+  position: absolute;
+  top: 50%;
   width: 100%;
-  background-color: #dc8;
-  height: 50px;
+  height: 100%;
+}
+#click_request {
+  background-color: #DDD;
+}
+#click_response {
+  background-color: #FFF;
+  display: none;
 }
 
-#center {
-  background-color: #eec;
-  min-height: 600px; /* for modern browsers */
-  height: auto !important; /* for modern browsers */
-  height: 600px; /* for IE5.x and IE6 */
+form {
+  margin: 2em auto 2em auto;
+  text-align: center;
+}
+.errorlist {
+  color: red;
+  margin: 0em;
+  padding: 0em;
+  list-style-type: none;
+}
+.offer_response {
+  padding: 1em;
+}
+.offer_response * {
+  display: inline;
+  list-style-type: none;
+  padding: 1em;
 }
 
-#footer {
-  clear: both;
-  background-color: #333;
-  height: 100px;
-}
