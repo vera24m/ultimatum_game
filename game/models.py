@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 class Kind(models.Model):
@@ -15,10 +16,6 @@ class Kind(models.Model):
     def __unicode__(self):
         return self.get_id_display()
 
-# XXX: Is there a better way to ensure existence of all Kinds?
-for k in Kind.IDS:
-    Kind.objects.get_or_create(id=k[0])
-
 class Opponent(models.Model):
     # XXX: Beter way of storing this?
     kind = models.ForeignKey(Kind)
@@ -35,6 +32,7 @@ class Player(models.Model):
         (FEMALE, 'Female')
     )
 
+    registration_datetime = models.DateTimeField(auto_now_add=True)
     gender = models.CharField(max_length=1, choices=GENDER)
     opponent_kind = models.ForeignKey(Kind)
     #opponents = models.ManyToManyField(Opponent)
@@ -45,12 +43,19 @@ class Player(models.Model):
         return '<P(%s) %s>' % (self.opponent_kind, self.pk)
 
 class Round(models.Model):
+    ACCEPT_CHOICES = ((True, 'Accept'), (False, 'Reject'))
+
+    datetime = models.DateTimeField(auto_now=True)
     player = models.ForeignKey(Player)
     opponent = models.ForeignKey(Opponent)
     amount_offered = models.IntegerField()
-    accepted = models.BooleanField()
+    accepted = models.BooleanField(choices=ACCEPT_CHOICES, default=None)
 
     # XXX: Express that oppenent's kind matches player's selected opponent_kind.
+    
+    def clean(self):
+        if self.accepted not in (True, False):
+            raise ValidationError('The offer must be accepted or rejected explicitly.')
 
     def __unicode__(self):
         return '<R(%s) %s / %s / %s>' % (self.accepted, self.opponent, this.amount_offered, this.player)
