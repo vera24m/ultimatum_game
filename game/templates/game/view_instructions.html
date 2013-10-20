@@ -5,8 +5,7 @@
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_gameinfo.php -->
 
-<form action="{% url 'game:start_round' %}" method="POST">
-  {% csrf_token %}
+<form action="{% url 'game:start_round' %}" method="get">
   <input type="submit" value="Next page" />
 </form>
 

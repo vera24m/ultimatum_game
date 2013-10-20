@@ -1,11 +1,46 @@
 {% include "game/header.html" %}
 
-<!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_showoffer.php -->
-<!-- Summarize outcome if last round. -->
+<script type="text/javascript">
+  function setFormEnabled(isEnabled) {
+    var inputs = document.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++){
+      inputs[i].disabled = !isEnabled;
+    }
+  }
 
-<form action="{% url 'game:end_round' %}" method="POST">
+  function showOffer() {
+    document.getElementById('click_request').style.display = 'none';
+    document.getElementById('click_response').style.display = 'block';
+  }
+</script>
+
+<p>{{ opponent_name }} has prepared an offer for you. Click the box below to see
+how {{ opponent_name }} would like to divide the available
+{{ amount_offered|add:amount_kept }} MU.</p>
+
+<div id="offer_section" onclick="showOffer(); setFormEnabled(true);">
+  <div id="click_request">
+    <p>Click here to see {{ opponent_name }}'s offer.</p>
+  </div>
+  <div id="click_response">
+    <p>You get <strong>{{ amount_offered }} MU</strong>.</p>
+    <p>{{ opponent_name }} keeps {{ amount_kept }} MU.</p>
+  </div>
+</div>
+
+<p>Indicate whether you want to <em>accept</em> or <em>reject</em> this
+division, then click <em>Next Page</em> to continue.</p>
+
+<form action="{% url 'game:play_round' %}" method="post">
   {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="offer_response">
+    {{ form.accepted }}
+  </div>
   <input type="submit" value="Next page" />
 </form>
 
+<script type="text/javascript">
+  setFormEnabled(false);
+</script>
 {% include "game/footer.html" %}
