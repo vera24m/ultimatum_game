@@ -158,7 +158,7 @@ def start_round(request):
         return HttpResponseSeeOther(reverse('game:start_questionnaire'))
 
     return render(request, 'game/start_round.html',
-                  {'round_number': round_number, 'opponent': opponent})
+                  {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
 
 # XXX: Move up or something?
 class OfferAcceptanceForm(ModelForm):

@@ -1,8 +1,12 @@
 {% include "game/header.html" %}
+{% load staticfiles %}
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_showopponent.php -->
 
 <p>Meet opponent {{ round_number }}.</p>
+
+<img src="{% static 'game/pictures/'|add:picture %}" alt="photo">
+
 
 <form action="{% url 'game:play_round' %}" method="get">
   <input type="submit" value="Next page" />
