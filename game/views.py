@@ -148,7 +148,7 @@ def start_game(request):
 def view_instructions(request):
     player = get_or_create_player(request.session)
     return render(request, 'game/view_instructions.html',
-                  {'opponent_kind': player.opponent_kind})
+                  {'opponent_kind': str(player.opponent_kind)})
 
 @require_GET
 def start_round(request):

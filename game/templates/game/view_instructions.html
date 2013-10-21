@@ -1,7 +1,8 @@
 {% include "game/header.html" %}
+{% load staticfiles %}
 <h1>Let's play a game - game instructions</h1>
 
-<h1>{{ opponent_kind }}</h1>
+<img src="{% static 'game/instructions/'|add:opponent_kind|add:'.png' %}" alt="photo">
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_gameinfo.php -->
 
