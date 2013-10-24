@@ -26,14 +26,14 @@ logger = logging.getLogger(__name__)
 # XXX: Also delete players.
 ###############################################################################
 # XXX: Is there a better way to ensure existence of all Kinds?
-#for k in Kind.IDS:
-#    Kind.objects.get_or_create(id=k[0])
+for k in Kind.IDS:
+    Kind.objects.get_or_create(id=k[0])
 #
 ## XXX: Is there a better way to generate all opponents?
-#for k in Kind.objects.all():
-#    for i in range(1, 9):
-#        picture = '%s_%s' % (k.id, i)
-#        Opponent.objects.get_or_create(kind=k, picture=picture)
+for k in Kind.objects.all():
+    for i in range(1, 9):
+        picture = '%s_%s' % (k.id, i)
+        Opponent.objects.get_or_create(kind=k, picture=picture)
 ###############################################################################
 
 # XXX: Must enforce, per player, that intro and instructions have been viewed!
@@ -148,7 +148,7 @@ def start_game(request):
 def view_instructions(request):
     player = get_or_create_player(request.session)
     return render(request, 'game/view_instructions.html',
-                  {'opponent_kind': player.opponent_kind})
+                  {'opponent_kind': str(player.opponent_kind)})
 
 @require_GET
 def start_round(request):
@@ -158,7 +158,7 @@ def start_round(request):
         return HttpResponseSeeOther(reverse('game:start_questionnaire'))
 
     return render(request, 'game/start_round.html',
-                  {'round_number': round_number, 'opponent': opponent})
+                  {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
 
 # XXX: Move up or something?
 class OfferAcceptanceForm(ModelForm):
