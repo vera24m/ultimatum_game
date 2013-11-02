@@ -7,7 +7,7 @@ from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 
-from game.models import Kind, Opponent, Player, Round, Question, Option
+from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -204,9 +204,39 @@ def end_round(request):
     # need for POST.
     return render(request, 'game/end_round.html', {})
 
-@require_GET
+# XXX: Move up or something?
+class QuestionnaireForm(ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['accepted']
+        widgets = { 'accepted': RadioSelect }
+
+@require_http_methods(["GET", "POST"])
 def questionnaire(request):
-    questions = Question.objects.all()
-    options = Option.objects.all()
-    questionnaire = [(q, [o for o in options if o.question == q]) for q in questions]
-    return render(request, 'game/questionnaire.html', {'questionnaire': questionnaire})
+    #player, opponent, round_number = get_round_details(request.session)
+    #round = Round(player=player, opponent=opponent, amount_offered=0)
+    
+    answer = Answer(player=Player.objects.all()[0], question=Question.objects.all()[0], option=Option.objects.all()[0])
+    if request.method == 'GET':
+        form = QuestionnaireForm(instance=answer)
+    else:
+        form = QuestionnaireForm(request.POST, instance=answer    )
+        if form.is_valid():
+            form.save()
+            return render(request, 'game/thankyou.html', {})
+
+    context = {
+      #'opponent_name': 'Opponent %d' % round_number,
+      #'amount_offered': amount_offered,
+      #'amount_kept': AMOUNT_AVAILABLE - amount_offered,
+      'form': form
+    }
+
+    return render(request, 'game/questionnaire.html', context)
+
+#@require_GET
+#def questionnaire(request):
+#    questions = Question.objects.all()
+#    options = Option.objects.all()
+#    questionnaire = [(q, [o for o in options if o.question == q]) for q in questions]
+#    return render(request, 'game/questionnaire.html', {'questionnaire': questionnaire})

@@ -1,13 +1,12 @@
 {% include "game/header.html" %}
 
-<h1>Questionnaire</h1>
-<ol>
-{% for question, options in questionnaire %}
-    <li>{{ question.text }}</li>
-    <ol>
-    {% for o in options %}
-        <li>{{ o.text }}
-    {% endfor %}
-    </ol>
-{% endfor %}
-</ol>
+
+<form action="{% url 'game:questionnaire' %}" method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="offer_response">
+    {{ form.accepted }}
+  </div>
+  <input type="submit" value="Next page" />
+</form>
+{% include "game/footer.html" %}
