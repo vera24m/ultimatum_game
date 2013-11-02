@@ -78,7 +78,7 @@ class Option(models.Model):
 class Answer(models.Model):
     """Model for an answer a user has given to a question."""
     options = Option.objects.all()
-    choices = ((options[0].id, options[0].text), (options[1].id, options[1].text))
+    choices = ((option.id, option.text) for option in options)
     player = models.ForeignKey(Player)
     question = models.ForeignKey(Question)
     option = models.ForeignKey(Option, choices=choices, default=None)   

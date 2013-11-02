@@ -217,10 +217,8 @@ class QuestionnaireForm(ModelForm):
 
 @require_http_methods(["GET", "POST"])
 def questionnaire(request):
-    #player, opponent, round_number = get_round_details(request.session)
-    #round = Round(player=player, opponent=opponent, amount_offered=0)
-    
-    answer = Answer(player=Player.objects.all()[0], question=Question.objects.all()[0])
+    player = get_round_details(request.session)[0]
+    answer = Answer(player=player, question=Question.objects.all()[0])
     if request.method == 'GET':
         form = QuestionnaireForm(instance=answer)
     else:
@@ -229,14 +227,7 @@ def questionnaire(request):
             form.save()
             return render(request, 'game/thankyou.html', {})
 
-    context = {
-      #'opponent_name': 'Opponent %d' % round_number,
-      #'amount_offered': amount_offered,
-      #'amount_kept': AMOUNT_AVAILABLE - amount_offered,
-      'form': form
-    }
-
-    return render(request, 'game/questionnaire.html', context)
+    return render(request, 'game/questionnaire.html', {'form': form})
 
 #@require_GET
 #def questionnaire(request):
