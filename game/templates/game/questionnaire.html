@@ -1,0 +1,13 @@
+{% include "game/header.html" %}
+
+<h1>Questionnaire</h1>
+<ol>
+{% for question, options in questionnaire %}
+    <li>{{ question.text }}</li>
+    <ol>
+    {% for o in options %}
+        <li>{{ o.text }}
+    {% endfor %}
+    </ol>
+{% endfor %}
+</ol>

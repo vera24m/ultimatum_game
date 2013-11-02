@@ -7,7 +7,7 @@ from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 
-from game.models import Kind, Opponent, Player, Round, Question
+from game.models import Kind, Opponent, Player, Round, Question, Option
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -206,4 +206,7 @@ def end_round(request):
 
 @require_GET
 def questionnaire(request):
-    return render(request, 'game/questionnaire.html', {'questions': Question.objects.all()})
+    questions = Question.objects.all()
+    options = Option.objects.all()
+    questionnaire = [(q, [o for o in options if o.question == q]) for q in questions]
+    return render(request, 'game/questionnaire.html', {'questionnaire': questionnaire})
