@@ -208,19 +208,23 @@ def end_round(request):
 class QuestionnaireForm(ModelForm):
     class Meta:
         model = Answer
-        fields = ['accepted']
-        widgets = { 'accepted': RadioSelect }
+        fields = ['option']
+        widgets = { 'option': RadioSelect }
+    
+    def clean_option(self):
+        option = self.cleaned_data['option']
+        return Option.objects.get(id=option)
 
 @require_http_methods(["GET", "POST"])
 def questionnaire(request):
     #player, opponent, round_number = get_round_details(request.session)
     #round = Round(player=player, opponent=opponent, amount_offered=0)
     
-    answer = Answer(player=Player.objects.all()[0], question=Question.objects.all()[0], option=Option.objects.all()[0])
+    answer = Answer(player=Player.objects.all()[0], question=Question.objects.all()[0])
     if request.method == 'GET':
         form = QuestionnaireForm(instance=answer)
     else:
-        form = QuestionnaireForm(request.POST, instance=answer    )
+        form = QuestionnaireForm(request.POST, instance=answer)
         if form.is_valid():
             form.save()
             return render(request, 'game/thankyou.html', {})
