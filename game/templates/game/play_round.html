@@ -1,6 +1,7 @@
 {% include "game/header.html" %}
 
 <script type="text/javascript">
+  var start;
   function setFormEnabled(isEnabled) {
     var inputs = document.getElementsByTagName('input');
     for (var i = 0; i < inputs.length; i++){
@@ -12,13 +13,22 @@
     document.getElementById('click_request').style.display = 'none';
     document.getElementById('click_response').style.display = 'block';
   }
+
+  function startTime(e) {
+    start = e.timeStamp;
+  }
+
+  function elapsed_time(e) {
+     document.my_form.time_elapsed.value = e.timeStamp - start;
+  }
+
 </script>
 
 <p>{{ opponent_name }} has prepared an offer for you. Click the box below to see
 how {{ opponent_name }} would like to divide the available
 {{ amount_offered|add:amount_kept }} MU.</p>
 
-<div id="offer_section" onclick="showOffer(); setFormEnabled(true);">
+<div id="offer_section" onclick="showOffer(); setFormEnabled(true); startTime(event);">
   <div id="click_request">
     <p>Click here to see {{ opponent_name }}'s offer.</p>
   </div>
@@ -31,13 +41,14 @@ how {{ opponent_name }} would like to divide the available
 <p>Indicate whether you want to <em>accept</em> or <em>reject</em> this
 division, then click <em>Next Page</em> to continue.</p>
 
-<form action="{% url 'game:play_round' %}" method="post">
+<form action="{% url 'game:play_round' %}" name="my_form" method="post">
   {% csrf_token %}
   {{ form.non_field_errors }}
   <div class="offer_response">
     {{ form.accepted }}
+    {{ form.time_elapsed }}
   </div>
-  <input type="submit" value="Next page" />
+  <input onclick="elapsed_time(event);" type="submit" value="Next page" />
 </form>
 
 <script type="text/javascript">

@@ -50,6 +50,7 @@ class Round(models.Model):
     opponent = models.ForeignKey(Opponent)
     amount_offered = models.IntegerField()
     accepted = models.BooleanField(choices=ACCEPT_CHOICES, default=None)
+    time_elapsed = models.IntegerField(default=-1)
 
     # XXX: Express that oppenent's kind matches player's selected opponent_kind.
     

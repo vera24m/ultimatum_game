@@ -2,7 +2,7 @@ import logging
 import random
 
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm, RadioSelect
+from django.forms import ModelForm, RadioSelect, HiddenInput
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
@@ -164,8 +164,8 @@ def start_round(request):
 class OfferAcceptanceForm(ModelForm):
     class Meta:
         model = Round
-        fields = ['accepted']
-        widgets = { 'accepted': RadioSelect }
+        fields = ['accepted', 'time_elapsed']
+        widgets = { 'accepted': RadioSelect, 'time_elapsed' : HiddenInput }
 
 @require_http_methods(["GET", "POST"])
 def play_round(request):
