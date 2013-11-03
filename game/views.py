@@ -218,7 +218,7 @@ class QuestionnaireForm(ModelForm):
 @require_http_methods(["GET", "POST"])
 def questionnaire(request):
     player = get_round_details(request.session)[0]
-    answers = [Answer(player=player, question=q) for q in Question.objects.all()]
+    answers = [Answer(player=player, question=q, options=[]) for q in Question.objects.all()]
     #answer = Answer(player=player, question=Question.objects.all()[0])
     if request.method == 'GET':
         #form = QuestionnaireForm(instance=answer)
