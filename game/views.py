@@ -218,16 +218,26 @@ class QuestionnaireForm(ModelForm):
 @require_http_methods(["GET", "POST"])
 def questionnaire(request):
     player = get_round_details(request.session)[0]
-    answer = Answer(player=player, question=Question.objects.all()[0])
+    answers = [Answer(player=player, question=q) for q in Question.objects.all()]
+    #answer = Answer(player=player, question=Question.objects.all()[0])
     if request.method == 'GET':
-        form = QuestionnaireForm(instance=answer)
+        #form = QuestionnaireForm(instance=answer)
+        forms = [QuestionnaireForm(prefix=str(a.question.id), instance=a) for a in answers]
+        questions_forms = [(a.question, QuestionnaireForm(prefix=str(a.question.id), instance=a)) for a in answers]
     else:
-        form = QuestionnaireForm(request.POST, instance=answer)
-        if form.is_valid():
-            form.save()
-            return render(request, 'game/thankyou.html', {})
+        #form = QuestionnaireForm(request.POST, instance=answer)
+        forms = [QuestionnaireForm(request.POST, prefix=str(a.question.id), instance=a) for a in answers]
+        questions_forms = [(a.question, QuestionnaireForm(request.POST, prefix=str(a.question.id), instance=a)) for a in answers]
+        #if all([form.is_valid() for form in forms]):
+        for form in forms:
+            if form.is_valid():
+                form.save()
+        return render(request, 'game/thankyou.html', {})
 
-    return render(request, 'game/questionnaire.html', {'form': form})
+    logger.debug('questions_forms:')
+    logger.debug(questions_forms)
+
+    return render(request, 'game/questionnaire.html', {'forms': forms, 'questions_forms': questions_forms})
 
 #@require_GET
 #def questionnaire(request):

@@ -1,11 +1,13 @@
 {% include "game/header.html" %}
 
-
 <form action="{% url 'game:questionnaire' %}" method="post">
   {% csrf_token %}
   {{ form.non_field_errors }}
   <div class="offer_response">
-    {{ form.option }}
+  {% for t in questions_forms %}
+    <p><b>{{ t.0.text }}</b></p><br />
+    {{ t.1.option }} <br />
+  {% endfor %}
   </div>
   <input type="submit" value="Next page" />
 </form>

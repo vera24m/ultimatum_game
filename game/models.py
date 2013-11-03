@@ -83,7 +83,7 @@ class Answer(models.Model):
     """Model for an answer a user has given to a question."""
     player = models.ForeignKey(Player)
     question = models.ForeignKey(Question)
-    logger.debug('question')
+    #logger.debug('question')
     options = [o for o in Option.objects.all() if o.question==Question.objects.all()[2]]
     choices = ((option.id, option.text) for option in options)
     option = models.ForeignKey(Option, choices=choices, default=None)   
@@ -92,3 +92,9 @@ class Answer(models.Model):
     
     def __unicode__(self):
         return '<A %s / %s / %s>' % (self.player, self.question, self.option)
+    
+    def generate_choices(self):
+        question = self.question
+        options = [o for o in Option.objects.all() if o.question==question]
+        choices = ((option.id, option.text) for option in options)
+        return choices
