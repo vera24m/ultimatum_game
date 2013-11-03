@@ -83,12 +83,9 @@ class Answer(models.Model):
     """Model for an answer a user has given to a question."""
     player = models.ForeignKey(Player)
     question = models.ForeignKey(Question)
-    #logger.debug('question')
-    #options = [o for o in Option.objects.all() if o.question==Question.objects.all()[2]]
-    choices = ((option.id, option.text) for option in options)
-    option = models.ForeignKey(Option, choices=choices, default=None)   
-    #ACCEPT_CHOICES = ((True, 'Accept'), (False, 'Reject'))
-    #accepted = models.BooleanField(choices=ACCEPT_CHOICES, default=None        
+    options = [o for o in Option.objects.all() if o.question==Question.objects.all()[2]]
+    choices = ((option.id, option.text) for option in options) 
+    option = models.ForeignKey(Option)      
     
     def __unicode__(self):
         return '<A %s / %s / %s>' % (self.player, self.question, self.option)

@@ -47,3 +47,6 @@ form {
   padding: 1em;
 }
 
+.questionnaire * {
+  list-style-type: none;
+}
