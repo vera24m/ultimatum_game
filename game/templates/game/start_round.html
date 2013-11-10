@@ -3,10 +3,11 @@
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_showopponent.php -->
 
-<p>Meet opponent {{ round_number }}.</p>
+<h1>Opponent {{ round_number }}</h1>
 
 <img src="{% static 'game/pictures/'|add:picture %}" alt="photo">
 
+<p>Meet opponent {{ round_number }}, shown in the picture above. You'll be playing against this opponent in the following round.</p>
 
 <form action="{% url 'game:play_round' %}" method="get">
   <input type="submit" value="Next page" />
