@@ -83,8 +83,8 @@ class Answer(models.Model):
     """Model for an answer a user has given to a question."""
     player = models.ForeignKey(Player)
     question = models.ForeignKey(Question)
-    options = [o for o in Option.objects.all() if o.question==Question.objects.all()[2]]
-    choices = ((option.id, option.text) for option in options) 
+    #options = [o for o in Option.objects.all() if o.question==Question.objects.all()[2]]
+    #choices = ((option.id, option.text) for option in options) 
     option = models.ForeignKey(Option)      
     
     def __unicode__(self):
