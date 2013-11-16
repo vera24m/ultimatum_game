@@ -223,8 +223,11 @@ def questionnaire(request):
     
     paginator = Paginator(questions, per_page=2, orphans=0) # Show 2 questions per page
     page = request.session.get('page', 1)
-    questions = paginator.page(page)
     
+    if page > paginator.num_pages:
+        return render(request, 'game/thankyou.html', {})
+    
+    questions = paginator.page(page)
     answers = [Answer(player=player, question=q) for q in questions]
     if request.method == 'GET':
         forms = [QuestionnaireForm(prefix=str(a.question.id), instance=a) for a in answers]
@@ -236,13 +239,13 @@ def questionnaire(request):
             for form in forms:
                 form.save()
             page += 1
+            request.session['page'] = page
             if not questions.has_next():
                 # Last page. Go to thank you page.
+                request.session['finished'] = True
                 return render(request, 'game/thankyou.html', {})
             else:
-                request.session['page'] = page
                 return HttpResponseSeeOther(reverse('game:questionnaire'))
-                #return render(request, 'game/questionnaire.html', {})
     
     questions = paginator.page(page)
     
