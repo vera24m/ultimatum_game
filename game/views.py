@@ -6,6 +6,7 @@ from django.forms import ModelForm, RadioSelect, HiddenInput
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
+from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 
@@ -218,7 +219,20 @@ class QuestionnaireForm(ModelForm):
 @require_http_methods(["GET", "POST"])
 def questionnaire(request):
     player = get_round_details(request.session)[0]
-    answers = [Answer(player=player, question=q) for q in Question.objects.all()]
+    questions = Question.objects.all()
+    
+    paginator = Paginator(questions, per_page=2, orphans=0) # Show 2 questions per page
+    page = request.GET.get('page')
+    try:
+        questions = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        questions = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        questions = paginator.page(paginator.num_pages)    
+    
+    answers = [Answer(player=player, question=q) for q in questions]
     if request.method == 'GET':
         forms = [QuestionnaireForm(prefix=str(a.question.id), instance=a) for a in answers]
         questions_forms = [(a.question, QuestionnaireForm(prefix=str(a.question.id), instance=a)) for a in answers]
@@ -228,7 +242,9 @@ def questionnaire(request):
         if all([form.is_valid() for form in forms]):
             for form in forms:
                 form.save()
-            return render(request, 'game/thankyou.html', {})
+            if not questions.has_next():
+                # Last page. Go to thank you page.
+                return render(request, 'game/thankyou.html', {})
     
     for (question, form) in questions_forms:
         form.fields['option'].queryset = Option.objects.filter(question=question)
