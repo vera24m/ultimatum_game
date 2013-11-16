@@ -1,7 +1,7 @@
 {% include "game/header.html" %}
 
 <h1>Questionnaire</h1>
-<form action="{% url 'game:questionnaire' %}?page=2" method="post">
+<form action="{% url 'game:questionnaire' %}" method="post">
   {% csrf_token %}
   {{ form.non_field_errors }}
   <div class="questionnaire">

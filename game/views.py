@@ -156,7 +156,7 @@ def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
     if not opponent:
         # XXX: Such a thing? not yet.
-        return HttpResponseSeeOther(reverse('game:start_questionnaire'))
+        return HttpResponseSeeOther(reverse('game:questionnaire'))
 
     return render(request, 'game/start_round.html',
                   {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
@@ -222,15 +222,8 @@ def questionnaire(request):
     questions = Question.objects.all()
     
     paginator = Paginator(questions, per_page=2, orphans=0) # Show 2 questions per page
-    page = request.GET.get('page')
-    try:
-        questions = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        questions = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        questions = paginator.page(paginator.num_pages)    
+    page = request.session.get('page', 1)
+    questions = paginator.page(page)
     
     answers = [Answer(player=player, question=q) for q in questions]
     if request.method == 'GET':
@@ -242,12 +235,20 @@ def questionnaire(request):
         if all([form.is_valid() for form in forms]):
             for form in forms:
                 form.save()
+            page += 1
             if not questions.has_next():
                 # Last page. Go to thank you page.
                 return render(request, 'game/thankyou.html', {})
+            else:
+                request.session['page'] = page
+                return HttpResponseSeeOther(reverse('game:questionnaire'))
+                #return render(request, 'game/questionnaire.html', {})
+    
+    questions = paginator.page(page)
     
     for (question, form) in questions_forms:
         form.fields['option'].queryset = Option.objects.filter(question=question)
         form.fields['option'].empty_label = None
-
+    
+    request.session['page'] = page
     return render(request, 'game/questionnaire.html', {'forms': forms, 'questions_forms': questions_forms})
