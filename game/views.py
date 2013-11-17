@@ -12,6 +12,12 @@ from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
+# The number of rounds.
+NUM_ROUNDS = 8
+# The number of questions per page in the questionnaire.
+QUESTIONS_PER_PAGE = 2
+# The minimum number of questions per page in the questionnaire.
+QUESTION_ORPHANS = 0
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +38,7 @@ for k in Kind.IDS:
 #
 ## XXX: Is there a better way to generate all opponents?
 for k in Kind.objects.all():
-    for i in range(1, 9):
+    for i in range(1, NUM_ROUNDS+1):
         picture = '%s_%s' % (k.id, i)
         Opponent.objects.get_or_create(kind=k, picture=picture)
 ###############################################################################
@@ -95,7 +101,8 @@ def get_or_create_offer(session, player):
     # or greater than the number of available opponents, there's no problem.
     # (Of course, during statistical analysis one must keep in mind that
     # players did not receive exactly the same offers.)
-    available_offers = [10, 10, 20, 20, 30, 30, 50, 50]
+    available_offers = [10, 10, 20, 20, 30, 30, 50, 50,]
+    assert len(available_offers) == NUM_ROUNDS
 
     for r in Round.objects.filter(player=player):
         available_offers.remove(r.amount_offered)
@@ -131,7 +138,7 @@ def get_round_details(session, find_opponent=False):
                      (player, round_number, opponent))
     else:
         round_number = None
-        logger.debug('Player %s played all rounds')
+        logger.debug('Player %s played all rounds' % player)
 
     return player, opponent, round_number
 
@@ -221,7 +228,7 @@ def questionnaire(request):
     player = get_round_details(request.session)[0]
     questions = Question.objects.all()
     
-    paginator = Paginator(questions, per_page=2, orphans=0) # Show 2 questions per page
+    paginator = Paginator(questions, per_page=QUESTIONS_PER_PAGE, orphans=QUESTION_ORPHANS) # Show x questions per page
     page = request.session.get('page', 1)
     
     if page > paginator.num_pages:
