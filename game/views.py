@@ -161,12 +161,23 @@ def view_instructions(request):
 @require_GET
 def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
+    if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
+        request.session['viewed'] = True
+        return HttpResponseSeeOther(reverse('game:intentionality'))
+    else:
+        request.session['viewed'] = False
     if not opponent:
-        # XXX: Such a thing? not yet.
         return HttpResponseSeeOther(reverse('game:questionnaire'))
 
     return render(request, 'game/start_round.html',
                   {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
+
+@require_GET
+def intentionality(request):
+    player, opponent, round_number = get_round_details(request.session)
+    print 'round_number: %d' % round_number
+    print 'so %s' % str(round_number==1)
+    return render(request, 'game/intentionality.html', {'intentionality': (round_number==1)})
 
 # XXX: Move up or something?
 class OfferAcceptanceForm(ModelForm):
