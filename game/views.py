@@ -211,7 +211,8 @@ def play_round(request):
       'opponent_name': 'Opponent %d' % round_number,
       'amount_offered': amount_offered,
       'amount_kept': AMOUNT_AVAILABLE - amount_offered,
-      'form': form
+      'form': form,
+      'picture': opponent.picture + '.jpg',
     }
 
     return render(request, 'game/play_round.html', context)
