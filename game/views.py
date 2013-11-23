@@ -203,7 +203,7 @@ def play_round(request):
             form.save()
             # Abstract away from this.
             del request.session['amount_offered']
-            del request.session['opponent_id']
+            #del request.session['opponent_id']
 
             return HttpResponseSeeOther(reverse('game:end_round'))
 
@@ -219,9 +219,11 @@ def play_round(request):
 
 @require_GET
 def end_round(request):
-    # If we timestamp rounds, we can always render appropriate info here; no
-    # need for POST.
-    return render(request, 'game/end_round.html', {})
+    player, opponent, round_number = get_round_details(request.session)
+    round = Round.objects.get(player=player, opponent=opponent) # TODO: fix filter
+    logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
+    del request.session['opponent_id']
+    return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})
 
 # XXX: Move up or something?
 class QuestionnaireForm(ModelForm):

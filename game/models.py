@@ -62,7 +62,7 @@ class Round(models.Model):
             raise ValidationError('The offer must be accepted or rejected explicitly.')
 
     def __unicode__(self):
-        return '<R(%s) %s / %s / %s>' % (self.accepted, self.opponent, this.amount_offered, this.player)
+        return '<R(%s) %s / %s / %s>' % (self.accepted, self.opponent, self.amount_offered, self.player)
 
 class Question(models.Model):
     """Model for a question of the questionnaire."""
