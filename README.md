@@ -6,6 +6,7 @@ Website for the HTI Minor Project on the ultimatum game.
 This project requires an installation of Python and Django, as well as some database server. We have tested MySQL along with mysql-python.
 
 Short installation guide:
+
 1. Install the latest version of Python 2.x.
 2. Install Django 1.5.x
 3. Install MySQL with username root and password root
