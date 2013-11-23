@@ -2,13 +2,13 @@ import logging
 import random
 
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm, RadioSelect, HiddenInput
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
+from game.forms import OfferAcceptanceForm, QuestionnaireForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -178,13 +178,6 @@ def intentionality(request):
     #XXX: randomize intentionality?
     return render(request, 'game/intentionality.html', {'intentionality': (round_number==1)})
 
-# XXX: Move up or something?
-class OfferAcceptanceForm(ModelForm):
-    class Meta:
-        model = Round
-        fields = ['accepted', 'time_elapsed']
-        widgets = { 'accepted': RadioSelect, 'time_elapsed' : HiddenInput }
-
 @require_http_methods(["GET", "POST"])
 def play_round(request):
     player, opponent, round_number = get_round_details(request.session)
@@ -224,17 +217,6 @@ def end_round(request):
     logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
     del request.session['opponent_id']
     return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})
-
-# XXX: Move up or something?
-class QuestionnaireForm(ModelForm):
-    class Meta:
-        model = Answer
-        fields = ['option']
-        widgets = { 'option': RadioSelect }
-    
-    #def clean_option(self):
-    #    option = self.cleaned_data['option']
-    #    return Option.objects.get(id=option)
 
 @require_http_methods(["GET", "POST"])
 def questionnaire(request):
