@@ -8,7 +8,8 @@
 <p>The next couple of opponents you will face will decide upon offers <strong>completely by themselves</strong>.</p>
 {% endif %}
 
-<form action="{% url 'game:start_round' %}" method="get">
+<form action="{% url 'game:intentionality' %}" method="get">
+{{ form.as_p }}
   <input type="submit" value="Next page" />
 </form>
 

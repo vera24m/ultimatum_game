@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
-from game.forms import OfferAcceptanceForm, QuestionnaireForm
+from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -175,8 +175,12 @@ def start_round(request):
 @require_GET
 def intentionality(request):
     player, opponent, round_number = get_round_details(request.session)
+    form = ReadForm()    
+    if request.GET.get('checked'):
+        return HttpResponseSeeOther(reverse('game:start_round'))
+    
     #XXX: randomize intentionality?
-    return render(request, 'game/intentionality.html', {'intentionality': (round_number==1)})
+    return render(request, 'game/intentionality.html', {'intentionality': (round_number==1), 'form': form})
 
 @require_http_methods(["GET", "POST"])
 def play_round(request):
@@ -213,7 +217,7 @@ def play_round(request):
 @require_GET
 def end_round(request):
     player, opponent, round_number = get_round_details(request.session)
-    round = Round.objects.get(player=player, opponent=opponent) # TODO: fix filter
+    round = Round.objects.get(player=player, opponent=opponent)
     logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
     del request.session['opponent_id']
     return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})

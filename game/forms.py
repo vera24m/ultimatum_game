@@ -1,4 +1,4 @@
-from django.forms import ModelForm, RadioSelect, HiddenInput
+from django.forms import Form, ModelForm, BooleanField, RadioSelect, HiddenInput
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 
@@ -17,3 +17,6 @@ class QuestionnaireForm(ModelForm):
     #def clean_option(self):
     #    option = self.cleaned_data['option']
     #    return Option.objects.get(id=option)
+
+class ReadForm(Form):
+    checked = BooleanField(label='Check this box if you have read this carefully')
