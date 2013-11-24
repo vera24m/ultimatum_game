@@ -1,4 +1,4 @@
-from django.forms import Form, ModelForm, BooleanField, RadioSelect, HiddenInput
+from django.forms import Form, ModelForm, BooleanField, CharField, RadioSelect, HiddenInput
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 
@@ -20,3 +20,10 @@ class QuestionnaireForm(ModelForm):
 
 class ReadForm(Form):
     checked = BooleanField(label='Check this box if you have read this carefully')
+
+class MturkForm(Form):
+    #XXX: check lengths!
+    #XXX: change to model form
+    hit = CharField(max_length=7)
+    assignment = CharField(max_length=14)
+    worker = CharField(max_length=8)

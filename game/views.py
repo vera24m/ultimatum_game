@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
-from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm
+from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm, MturkForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -150,7 +150,9 @@ def get_round_details(session, find_opponent=False):
 
 @require_GET
 def start_game(request):
-    return render(request, 'game/start_game.html', {})
+    #XXX: store results!
+    form = MturkForm(request.GET)
+    return render(request, 'game/start_game.html', {'mturk': form})
 
 @require_GET
 def view_instructions(request):
