@@ -54,6 +54,7 @@ class Round(models.Model):
     player = models.ForeignKey(Player)
     opponent = models.ForeignKey(Opponent)
     amount_offered = models.IntegerField()
+    is_intentional = models.BooleanField()
     accepted = models.BooleanField(choices=ACCEPT_CHOICES, default=None)
     time_elapsed = models.IntegerField(default=-1)
 

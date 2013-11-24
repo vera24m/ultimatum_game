@@ -142,11 +142,8 @@ def get_round_details(session, find_opponent=False):
 
     return player, opponent, round_number
 
-#def can_play_round():
-#    return True
-#
-#def is_playing_round():
-#    return True
+def is_first_subround(round_number):
+    return round_number in {1, (NUM_ROUNDS / 2) + 1}
 
 @require_GET
 def start_game(request):
@@ -158,25 +155,36 @@ def view_instructions(request):
     return render(request, 'game/view_instructions.html',
                   {'opponent_kind': str(player.opponent_kind)})
 
+@require_http_methods(["GET", "POST"])
+def intentionality(request):
+    player, opponent, round_number = get_round_details(request.session)
+
+    if not is_first_subround(round_number):
+        return HttpResponseSeeOther(reverse('game:start_round'))
+
+    if 'viewed_intentionality' not in request.session:
+        request.session['viewed_intentionality'] = []
+
+    if request.method == 'POST':
+        request.session['viewed_intentionality'] += [round_number]
+        return HttpResponseSeeOther(reverse('game:start_round'))
+
+    #XXX: randomize intentionality?
+    return render(request, 'game/intentionality.html',
+                  {'intentionality': (round_number == 1)})
+
 @require_GET
 def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
-    if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
-        request.session['viewed'] = True
-        return HttpResponseSeeOther(reverse('game:intentionality'))
-    else:
-        request.session['viewed'] = False
+
     if not opponent:
         return HttpResponseSeeOther(reverse('game:questionnaire'))
 
+    if is_first_subround(round_number) and not round_number in request.session.get('viewed_intentionality', []):
+        return HttpResponseSeeOther(reverse('game:intentionality'))
+
     return render(request, 'game/start_round.html',
                   {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
-
-@require_GET
-def intentionality(request):
-    player, opponent, round_number = get_round_details(request.session)
-    #XXX: randomize intentionality?
-    return render(request, 'game/intentionality.html', {'intentionality': (round_number==1)})
 
 @require_http_methods(["GET", "POST"])
 def play_round(request):
@@ -187,7 +195,8 @@ def play_round(request):
         return HttpResponseSeeOther(reverse('game:start_round'))
 
     amount_offered = get_or_create_offer(request.session, player)
-    round = Round(player=player, opponent=opponent, amount_offered=amount_offered)
+    round = Round(player=player, opponent=opponent, amount_offered=amount_offered,
+                  is_intentional=(round_number <= (NUM_ROUNDS / 2)))
     if request.method == 'GET':
         form = OfferAcceptanceForm(instance=round)
     else:
