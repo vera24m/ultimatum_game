@@ -33,14 +33,14 @@ logger = logging.getLogger(__name__)
 # XXX: Also delete players.
 ###############################################################################
 # XXX: Is there a better way to ensure existence of all Kinds?
-for k in Kind.IDS:
-    Kind.objects.get_or_create(id=k[0])
-#
-## XXX: Is there a better way to generate all opponents?
-for k in Kind.objects.all():
-    for i in range(1, NUM_ROUNDS+1):
-        picture = '%s_%s' % (k.id, i)
-        Opponent.objects.get_or_create(kind=k, picture=picture)
+#for k in Kind.IDS:
+#    Kind.objects.get_or_create(id=k[0])
+##
+### XXX: Is there a better way to generate all opponents?
+#for k in Kind.objects.all():
+#    for i in range(1, NUM_ROUNDS+1):
+#        picture = '%s_%s' % (k.id, i)
+#        Opponent.objects.get_or_create(kind=k, picture=picture)
 ###############################################################################
 
 # XXX: Must enforce, per player, that intro and instructions have been viewed!
