@@ -6,6 +6,24 @@
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_gameinfo.php -->
 
+<p>As mentioned on the previous page, the first part of this experiment consists of several rounds of a simple game. The game revolves around 'Money Units' ('MU'), the currency of the game.
+Two players take part in the game: you and your opponent. The objective for both players is to gather MU. You will play eight rounds in total and face a different opponent in each round.</p>
+
+<p>Each round consists of 3 steps:
+<ol>
+<li>A short introduction: you get to see a picture of the opponent you will face in this round.</li>
+<li>A total amount of 100 MU is available at the start of the round. Your opponent gets to
+propose a division of the available 100 MU between the players. <em>For instance, your opponent may propose that you yet 25 MU, keeping the remaining 75 MU.</em></li>
+<li>After receiving this offer, you get to decide whether the deal goes through. You have two options: to accept the offer or to refect the offer.</li>
+<ol type="a"><li><strong>Accept:</strong> If you accept the offer, the Money Units are distributed as proposed by your opponent. <em>Continuing the above example, you would get 25 MU and your opponent would get 75 MU.</em></li>
+<li><strong>Reject:</strong> If you reject the offer, the deal is off. As a result, your opponent will receive no MU in this round, but it also means you give up your share and receive no MU in this round.</li></ol></ol></p>
+
+<p>Note that you will only meet each of the opponents once and that neither you, nor the other
+players, have any means of communicating with one another. What happens in each round
+therefore stands alone and cannot inﬂuence or be inﬂuenced by other game rounds.</p>
+
+<em>Click 'Next page' to continue with the experiment and start the first round.</em>
+
 <form action="{% url 'game:start_round' %}" method="get">
   <input type="submit" value="Next page" />
 </form>

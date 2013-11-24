@@ -3,6 +3,14 @@
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_showresult.php -->
 
 <!-- XXX: Wrong. After last round we must not start again! -->
+<h1>Round has ended</h1>
+<p>This concludes the current round.</p>
+{% if accepted %}
+<p>You have gained {{ amount_offered }} MU.</p>
+{% else %}
+<p>You have not gained any money units this round.</p>
+{% endif %}
+<p>Click the button below to proceed.</p>
 <form action="{% url 'game:start_round' %}" method="get">
   <input type="submit" value="Next page" />
 </form>

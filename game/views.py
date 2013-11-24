@@ -2,15 +2,22 @@ import logging
 import random
 
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm, RadioSelect, HiddenInput
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
+from django.core.paginator import Paginator, PageNotAnInteger
 
-from game.models import Kind, Opponent, Player, Round
+from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
+from game.forms import OfferAcceptanceForm, QuestionnaireForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
+# The number of rounds.
+NUM_ROUNDS = 8
+# The number of questions per page in the questionnaire.
+QUESTIONS_PER_PAGE = 2
+# The minimum number of questions per page in the questionnaire.
+QUESTION_ORPHANS = 0
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +38,7 @@ for k in Kind.IDS:
 #
 ## XXX: Is there a better way to generate all opponents?
 for k in Kind.objects.all():
-    for i in range(1, 9):
+    for i in range(1, NUM_ROUNDS+1):
         picture = '%s_%s' % (k.id, i)
         Opponent.objects.get_or_create(kind=k, picture=picture)
 ###############################################################################
@@ -94,7 +101,8 @@ def get_or_create_offer(session, player):
     # or greater than the number of available opponents, there's no problem.
     # (Of course, during statistical analysis one must keep in mind that
     # players did not receive exactly the same offers.)
-    available_offers = [10, 10, 20, 20, 30, 30, 50, 50]
+    available_offers = [10, 10, 20, 20, 30, 30, 50, 50,]
+    assert len(available_offers) == NUM_ROUNDS
 
     for r in Round.objects.filter(player=player):
         available_offers.remove(r.amount_offered)
@@ -130,7 +138,7 @@ def get_round_details(session, find_opponent=False):
                      (player, round_number, opponent))
     else:
         round_number = None
-        logger.debug('Player %s played all rounds')
+        logger.debug('Player %s played all rounds' % player)
 
     return player, opponent, round_number
 
@@ -153,19 +161,22 @@ def view_instructions(request):
 @require_GET
 def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
+    if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
+        request.session['viewed'] = True
+        return HttpResponseSeeOther(reverse('game:intentionality'))
+    else:
+        request.session['viewed'] = False
     if not opponent:
-        # XXX: Such a thing? not yet.
-        return HttpResponseSeeOther(reverse('game:start_questionnaire'))
+        return HttpResponseSeeOther(reverse('game:questionnaire'))
 
     return render(request, 'game/start_round.html',
                   {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
 
-# XXX: Move up or something?
-class OfferAcceptanceForm(ModelForm):
-    class Meta:
-        model = Round
-        fields = ['accepted', 'time_elapsed']
-        widgets = { 'accepted': RadioSelect, 'time_elapsed' : HiddenInput }
+@require_GET
+def intentionality(request):
+    player, opponent, round_number = get_round_details(request.session)
+    #XXX: randomize intentionality?
+    return render(request, 'game/intentionality.html', {'intentionality': (round_number==1)})
 
 @require_http_methods(["GET", "POST"])
 def play_round(request):
@@ -185,7 +196,7 @@ def play_round(request):
             form.save()
             # Abstract away from this.
             del request.session['amount_offered']
-            del request.session['opponent_id']
+            #del request.session['opponent_id']
 
             return HttpResponseSeeOther(reverse('game:end_round'))
 
@@ -193,14 +204,56 @@ def play_round(request):
       'opponent_name': 'Opponent %d' % round_number,
       'amount_offered': amount_offered,
       'amount_kept': AMOUNT_AVAILABLE - amount_offered,
-      'form': form
+      'form': form,
+      'picture': opponent.picture + '.jpg',
     }
 
     return render(request, 'game/play_round.html', context)
 
 @require_GET
 def end_round(request):
-    # If we timestamp rounds, we can always render appropriate info here; no
-    # need for POST.
-    return render(request, 'game/end_round.html', {})
+    player, opponent, round_number = get_round_details(request.session)
+    round = Round.objects.get(player=player, opponent=opponent) # TODO: fix filter
+    logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
+    del request.session['opponent_id']
+    return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})
 
+@require_http_methods(["GET", "POST"])
+def questionnaire(request):
+    player = get_round_details(request.session)[0]
+    questions = Question.objects.all()
+    
+    paginator = Paginator(questions, per_page=QUESTIONS_PER_PAGE, orphans=QUESTION_ORPHANS) # Show x questions per page
+    page = request.session.get('page', 1)
+    
+    if page > paginator.num_pages:
+        return render(request, 'game/thankyou.html', {})
+    
+    questions = paginator.page(page)
+    answers = [Answer(player=player, question=q) for q in questions]
+    if request.method == 'GET':
+        forms = [QuestionnaireForm(prefix=str(a.question.id), instance=a) for a in answers]
+        questions_forms = [(a.question, QuestionnaireForm(prefix=str(a.question.id), instance=a)) for a in answers]
+    else:
+        forms = [QuestionnaireForm(request.POST, prefix=str(a.question.id), instance=a) for a in answers]
+        questions_forms = [(a.question, QuestionnaireForm(request.POST, prefix=str(a.question.id), instance=a)) for a in answers]
+        if all([form.is_valid() for form in forms]):
+            for form in forms:
+                form.save()
+            page += 1
+            request.session['page'] = page
+            if not questions.has_next():
+                # Last page. Go to thank you page.
+                request.session['finished'] = True
+                return render(request, 'game/thankyou.html', {})
+            else:
+                return HttpResponseSeeOther(reverse('game:questionnaire'))
+    
+    questions = paginator.page(page)
+    
+    for (question, form) in questions_forms:
+        form.fields['option'].queryset = Option.objects.filter(question=question)
+        form.fields['option'].empty_label = None
+    
+    request.session['page'] = page
+    return render(request, 'game/questionnaire.html', {'forms': forms, 'questions_forms': questions_forms})

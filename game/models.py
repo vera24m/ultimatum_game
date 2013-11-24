@@ -1,5 +1,8 @@
+import logging
 from django.core.exceptions import ValidationError
 from django.db import models
+
+logger = logging.getLogger(__name__)
 
 class Kind(models.Model):
     ID_HUMAN = 'h'
@@ -59,5 +62,36 @@ class Round(models.Model):
             raise ValidationError('The offer must be accepted or rejected explicitly.')
 
     def __unicode__(self):
-        return '<R(%s) %s / %s / %s>' % (self.accepted, self.opponent, this.amount_offered, this.player)
+        return '<R(%s) %s / %s / %s>' % (self.accepted, self.opponent, self.amount_offered, self.player)
 
+class Question(models.Model):
+    """Model for a question of the questionnaire."""
+    text = models.CharField(max_length=200)
+    
+    def __unicode__(self):
+        return self.text
+
+class Option(models.Model):
+    """Model for a possible answer to a question."""
+    question = models.ForeignKey(Question)
+    text = models.CharField(max_length=200)
+    
+    def __unicode__(self):
+        return self.text
+
+class Answer(models.Model):
+    """Model for an answer a user has given to a question."""
+    player = models.ForeignKey(Player)
+    question = models.ForeignKey(Question)
+    #options = [o for o in Option.objects.all() if o.question==Question.objects.all()[2]]
+    #choices = ((option.id, option.text) for option in options) 
+    option = models.ForeignKey(Option)      
+    
+    def __unicode__(self):
+        return '<A %s / %s / %s>' % (self.player, self.question, self.option)
+    
+    def generate_choices(self):
+        question = self.question
+        options = [o for o in Option.objects.all() if o.question==question]
+        choices = ((option.id, option.text) for option in options)
+        return choices

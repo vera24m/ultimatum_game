@@ -1,0 +1,15 @@
+{% include "game/header.html" %}
+{% load staticfiles %}
+<h1>Let's play a game - about your next opponents</h1>
+<h3>Read this carefully!!!</h3>
+{% if intentionality %}
+<p>The next couple of opponents you will face will give you <strong>completely random</strong> offers.</p>
+{% else %}
+<p>The next couple of opponents you will face will decide upon offers <strong>completely by themselves</strong>.</p>
+{% endif %}
+
+<form action="{% url 'game:start_round' %}" method="get">
+  <input type="submit" value="Next page" />
+</form>
+
+{% include "game/footer.html" %}
