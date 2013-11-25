@@ -1,5 +1,6 @@
 import logging
 import random
+import time
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
@@ -155,12 +156,17 @@ def start_game(request):
 @require_GET
 def view_instructions(request):
     player = get_or_create_player(request.session)
+    request.session['instructions_time'] = time.time()
     return render(request, 'game/view_instructions.html',
                   {'opponent_kind': str(player.opponent_kind)})
 
 @require_GET
 def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
+    if player.instructions_time == -1:
+        elapsed = time.time() - request.session.get('instructions_time')
+        player.instructions_time = int(round(elapsed))
+        player.save()
     if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
         request.session['viewed'] = True
         return HttpResponseSeeOther(reverse('game:intentionality'))

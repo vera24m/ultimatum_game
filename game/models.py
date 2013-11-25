@@ -41,6 +41,7 @@ class Player(models.Model):
     opponent_kind = models.ForeignKey(Kind)
     #opponents = models.ManyToManyField(Opponent)
     mturk_key = models.CharField(max_length=32, default=uuid1().hex, editable=False)
+    instructions_time = models.IntegerField(default=-1)
 
     # XXX: Express that all opponents should be of the same kind.
 
