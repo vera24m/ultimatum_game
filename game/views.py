@@ -88,6 +88,12 @@ def create_opponent(session, player):
 
     return opponent
 
+def create_intent(session, player, round_number):
+    choice = session.get('intent', random.choice([True, False]))
+    session['intent'] = choice
+
+    return choice
+
 def get_or_create_offer(session, player):
     offer = session.get('amount_offered', None)
     if offer:
@@ -101,7 +107,7 @@ def get_or_create_offer(session, player):
     # or greater than the number of available opponents, there's no problem.
     # (Of course, during statistical analysis one must keep in mind that
     # players did not receive exactly the same offers.)
-    available_offers = [10, 10, 20, 20, 30, 30, 50, 50,]
+    available_offers = [10, 10, 20, 20, 30, 30, 50, 50]
     assert len(available_offers) == NUM_ROUNDS
 
     for r in Round.objects.filter(player=player):
@@ -168,10 +174,13 @@ def intentionality(request):
     if request.method == 'POST':
         request.session['viewed_intentionality'] += [round_number]
         return HttpResponseSeeOther(reverse('game:start_round'))
-
+    choice = create_intent(request.session, player, round_number)
+    if (round_number == 1): 
+        choice = not choice
+    
     #XXX: randomize intentionality?
     return render(request, 'game/intentionality.html',
-                  {'intentionality': (round_number == 1)})
+                  {'intentionality': choice})
 
 @require_GET
 def start_round(request):
