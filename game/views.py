@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
-from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm, MturkForm
+from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100

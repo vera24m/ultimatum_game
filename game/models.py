@@ -1,6 +1,7 @@
 import logging
 from django.core.exceptions import ValidationError
 from django.db import models
+from uuid import uuid1
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ class Player(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER)
     opponent_kind = models.ForeignKey(Kind)
     #opponents = models.ManyToManyField(Opponent)
+    mturk_key = models.CharField(max_length=32, default=uuid1().hex, editable=False)
 
     # XXX: Express that all opponents should be of the same kind.
 
