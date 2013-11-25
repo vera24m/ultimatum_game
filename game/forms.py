@@ -20,10 +20,3 @@ class QuestionnaireForm(ModelForm):
 
 class ReadForm(Form):
     checked = BooleanField(label='Check this box if you have read this carefully')
-
-class MturkForm(Form):
-    #XXX: check lengths!
-    #XXX: change to model form
-    hit = CharField(max_length=7)
-    assignment = CharField(max_length=14)
-    worker = CharField(max_length=8)

@@ -150,9 +150,7 @@ def get_round_details(session, find_opponent=False):
 
 @require_GET
 def start_game(request):
-    #XXX: store results!
-    form = MturkForm(request.GET)
-    return render(request, 'game/start_game.html', {'mturk': form})
+    return render(request, 'game/start_game.html')
 
 @require_GET
 def view_instructions(request):
