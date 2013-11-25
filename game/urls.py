@@ -10,5 +10,6 @@ urlpatterns = patterns(#'',
     url(r'^round/play/$', views.play_round, name='play_round'),
     url(r'^round/end/$', views.end_round, name='end_round'),
     url(r'^questionnaire/$', views.questionnaire, name='questionnaire'),
+    url(r'^thankyou/$', views.thankyou, name='thankyou'),
     url('', views.start_game, name='start_game')    
 )

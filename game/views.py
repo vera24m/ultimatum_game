@@ -231,7 +231,7 @@ def questionnaire(request):
     page = request.session.get('page', 1)
     
     if page > paginator.num_pages:
-        return render(request, 'game/thankyou.html', {})
+        return HttpResponseSeeOther(reverse('game:thankyou'))
     
     questions = paginator.page(page)
     answers = [Answer(player=player, question=q) for q in questions]
@@ -249,7 +249,7 @@ def questionnaire(request):
             if not questions.has_next():
                 # Last page. Go to thank you page.
                 request.session['finished'] = True
-                return render(request, 'game/thankyou.html', {})
+                return HttpResponseSeeOther(reverse('game:thankyou'))
             else:
                 return HttpResponseSeeOther(reverse('game:questionnaire'))
     
@@ -261,3 +261,7 @@ def questionnaire(request):
     
     request.session['page'] = page
     return render(request, 'game/questionnaire.html', {'forms': forms, 'questions_forms': questions_forms})
+
+@require_GET
+def thankyou(request):
+    return render(request, 'game/thankyou.html', {})
