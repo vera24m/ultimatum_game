@@ -264,4 +264,6 @@ def questionnaire(request):
 
 @require_GET
 def thankyou(request):
-    return render(request, 'game/thankyou.html', {})
+    player, opponent, round_number = get_round_details(request.session)
+    key = player.mturk_key
+    return render(request, 'game/thankyou.html', {'key': key})
