@@ -34,13 +34,12 @@ add(second_batch_questions, second_batch_options)
 
 third_batch_questions = ['Overall, what is your attitude toward the opponents you encountered in this study?', 'Overall, how likeable did you find your opponents?', 'Overall, how attractive did you find the pictures of your opponents?', 'Overall, to what extent did you feel opponents 1 to 4 were responsible for the offers they made?', 'Overall, to what extent did you feel opponents 5 to 8 were responsible for the offers they made?', 'How noticeable were the differences between the opponents you encountered?',]
 
-#TODO: replace by sensible options for each question
-third_batch_options = [['Q1O1', 'Q1O2'],
-                       ['Q2O1', 'Q2O2'],
-                       ['etc'],
-                       ['etc'],
-                       ['etc'],
-                       ['etc'],
+third_batch_options = [['Extremely negative', 'Moderately negative', 'Slightly negative', 'Neither negative nor positive', 'Slightly positive', 'Moderately positive', 'Extremely positive',],
+                       ['Extremely unlikable', 'Moderately unlikable', 'Slightly unlikable', 'Neither unlikable nor likable', 'Slightly likeable', 'Moderately likeable', 'Extremely likeable',],
+                       ['Extremely unattractive', 'Moderately unattractive', 'Slightly unattractive', 'Neither unattractive nor attractive', 'Slightly attractive', 'Moderately attractive', 'Extremely attractive',],
+                       ['Extremely unresponsible', 'Moderately unresponsible', 'Slightly unresponsible', 'Neither unresponsible nor responsible', 'Slightly responsible', 'Moderately responsible', 'Extremely responsible',],
+                       ['Extremely unresponsible', 'Moderately unresponsible', 'Slightly unresponsible', 'Neither unresponsible nor responsible', 'Slightly responsible', 'Moderately responsible', 'Extremely responsible',],
+                       ['Extremely unnoticable', 'Moderately unnoticable', 'Slightly unnoticable', 'Neither unnoticable nor noticable', 'Slightly noticable', 'Moderately noticable', 'Extremely noticable',],
                       ]
 
 for x in range(len(third_batch_questions)):
@@ -48,10 +47,9 @@ for x in range(len(third_batch_questions)):
 
 fourth_batch_questions = ['Do you feel like your knowledge of the opponents\' appearance influenced your decisions in the game?', 'How motivated were you to earn as many Money Units as possible in the game?', 'Do you feel like emotions or other non-financial motivations influence your decisions in the game?',]
 
-#TODO: replace by sensible options for each question
-fourth_batch_options = [['Q1O1', 'Q1O2'],
-                       ['Q2O1', 'Q2O2'],
-                       ['etc'],
+fourth_batch_options = [['??', '??'], #TODO: replace by sensible options
+                       ['Extremely unmotivated', 'Moderately unmotivated', 'Slightly unmotivated', 'Neither unmotivated nor motivated', 'Slightly motivated', 'Moderately motivated', 'Extremely motivated',],
+                       ['etc'], #TODO: replace by sensible options
                       ]
 
 for x in range(len(fourth_batch_questions)):
@@ -62,8 +60,8 @@ fifth_batch_questions = ['On average, how many hours a day do you spend interact
 #TODO: replace by sensible options for each question
 fifth_batch_options = [['Q1O1', 'Q1O2'],
                        ['Q2O1', 'Q2O2'],
-                       ['etc'],
-                       ['etc'],
+                       ['Yes', 'No',],
+                       ['Male', 'Female',],
                        ['etc'],
                        ['etc'],
                        ['etc'],
