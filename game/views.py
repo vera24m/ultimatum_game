@@ -212,11 +212,11 @@ def start_round(request):
         elapsed = time.time() - request.session.get('instructions_time')
         player.instructions_time = int(round(elapsed))
         player.save()
-    if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
-        request.session['viewed'] = True
-        return HttpResponseSeeOther(reverse('game:intentionality'))
-    else:
-        request.session['viewed'] = False
+    #if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
+    #    request.session['viewed'] = True
+    #    return HttpResponseSeeOther(reverse('game:intentionality'))
+    #else:
+    #    request.session['viewed'] = False
 
     if not opponent:
         return HttpResponseSeeOther(reverse('game:questionnaire'))
