@@ -181,14 +181,16 @@ def no_player(request):
 @require_http_methods(["GET", "POST"])
 def intentionality(request):
     player, opponent, round_number = get_round_details(request.session)
-
+    
+    form = ReadForm()
+    logger.debug(request.POST.get('checked', False))
     if not is_first_subround(round_number):
         return HttpResponseSeeOther(reverse('game:start_round'))
 
     if 'viewed_intentionality' not in request.session:
         request.session['viewed_intentionality'] = []
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('checked', False):
         request.session['viewed_intentionality'] += [round_number]
         return HttpResponseSeeOther(reverse('game:start_round'))
     
@@ -202,7 +204,7 @@ def intentionality(request):
             request.session['visited_intent'] = True
     
     return render(request, 'game/intentionality.html',
-                  {'intentionality': choice})
+                  {'intentionality': choice, 'form': form})
 
 @require_GET
 def start_round(request):
