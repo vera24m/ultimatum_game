@@ -16,9 +16,9 @@ AMOUNT_AVAILABLE = 100
 # The number of rounds.
 NUM_ROUNDS = 8
 # The number of questions per page in the questionnaire.
-QUESTIONS_PER_PAGE = 2
+QUESTIONS_PER_PAGE = 5
 # The minimum number of questions per page in the questionnaire.
-QUESTION_ORPHANS = 0
+QUESTION_ORPHANS = 2
 
 logger = logging.getLogger(__name__)
 
