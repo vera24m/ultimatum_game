@@ -1,4 +1,4 @@
-from django.forms import ModelForm, RadioSelect, HiddenInput
+from django.forms import Form, ModelForm, BooleanField, RadioSelect, HiddenInput
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 
