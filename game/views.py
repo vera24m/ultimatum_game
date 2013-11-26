@@ -265,7 +265,7 @@ def play_round(request):
 @require_GET
 def end_round(request):
     player, opponent, round_number = get_round_details(request.session)
-    round = Round.objects.get(player=player, opponent=opponent) # TODO: fix filter
+    round = Round.objects.get(player=player, opponent=opponent)
     logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
     del request.session['opponent_id']
     return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})
