@@ -2,14 +2,16 @@
 {% load staticfiles %}
 <h1>Let's play a game - about your next opponents</h1>
 <h3>Read this carefully!!!</h3>
+<p>The next couple of opponents you will face will
 {% if intentionality %}
-<p>The next couple of opponents you will face will give you <strong>completely random</strong> offers.</p>
+  decide upon offers <strong>completely by themselves</strong>.
 {% else %}
-<p>The next couple of opponents you will face will decide upon offers <strong>completely by themselves</strong>.</p>
+  give you <strong>completely random</strong> offers.
 {% endif %}
+</p>
 
-<form action="{% url 'game:intentionality' %}" method="get">
-  {{ form.as_p }}
+<form action="{% url 'game:intentionality' %}" method="post">
+  {% csrf_token %}
   <input type="submit" value="Next page" />
 </form>
 

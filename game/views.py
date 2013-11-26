@@ -34,14 +34,14 @@ logger = logging.getLogger(__name__)
 # XXX: Also delete players.
 ###############################################################################
 # XXX: Is there a better way to ensure existence of all Kinds?
-for k in Kind.IDS:
-    Kind.objects.get_or_create(id=k[0])
-#
-## XXX: Is there a better way to generate all opponents?
-for k in Kind.objects.all():
-    for i in range(1, NUM_ROUNDS+1):
-        picture = '%s_%s' % (k.id, i)
-        Opponent.objects.get_or_create(kind=k, picture=picture)
+#for k in Kind.IDS:
+#    Kind.objects.get_or_create(id=k[0])
+##
+### XXX: Is there a better way to generate all opponents?
+#for k in Kind.objects.all():
+#    for i in range(1, NUM_ROUNDS+1):
+#        picture = '%s_%s' % (k.id, i)
+#        Opponent.objects.get_or_create(kind=k, picture=picture)
 ###############################################################################
 
 # XXX: Must enforce, per player, that intro and instructions have been viewed!
@@ -89,6 +89,12 @@ def create_opponent(session, player):
 
     return opponent
 
+def create_intent(session, player, round_number):
+    choice = session.get('intent', random.choice([True, False]))
+    session['intent'] = choice
+
+    return choice
+
 def get_or_create_offer(session, player):
     offer = session.get('amount_offered', None)
     if offer:
@@ -102,7 +108,7 @@ def get_or_create_offer(session, player):
     # or greater than the number of available opponents, there's no problem.
     # (Of course, during statistical analysis one must keep in mind that
     # players did not receive exactly the same offers.)
-    available_offers = [10, 10, 20, 20, 30, 30, 50, 50,]
+    available_offers = [10, 10, 20, 20, 30, 30, 50, 50]
     assert len(available_offers) == NUM_ROUNDS
 
     for r in Round.objects.filter(player=player):
@@ -143,15 +149,12 @@ def get_round_details(session, find_opponent=False):
 
     return player, opponent, round_number
 
-#def can_play_round():
-#    return True
-#
-#def is_playing_round():
-#    return True
+def is_first_subround(round_number):
+    return round_number in {1, (NUM_ROUNDS / 2) + 1}
 
 @require_GET
 def start_game(request):
-    return render(request, 'game/start_game.html')
+    return render(request, 'game/start_game.html', {})
 
 @require_GET
 def view_instructions(request):
@@ -160,9 +163,31 @@ def view_instructions(request):
     return render(request, 'game/view_instructions.html',
                   {'opponent_kind': str(player.opponent_kind)})
 
+@require_http_methods(["GET", "POST"])
+def intentionality(request):
+    player, opponent, round_number = get_round_details(request.session)
+
+    if not is_first_subround(round_number):
+        return HttpResponseSeeOther(reverse('game:start_round'))
+
+    if 'viewed_intentionality' not in request.session:
+        request.session['viewed_intentionality'] = []
+
+    if request.method == 'POST':
+        request.session['viewed_intentionality'] += [round_number]
+        return HttpResponseSeeOther(reverse('game:start_round'))
+    choice = create_intent(request.session, player, round_number)
+    if (round_number == 1): 
+        choice = not choice
+    
+    #XXX: randomize intentionality?
+    return render(request, 'game/intentionality.html',
+                  {'intentionality': choice})
+
 @require_GET
 def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
+
     if player.instructions_time == -1:
         elapsed = time.time() - request.session.get('instructions_time')
         player.instructions_time = int(round(elapsed))
@@ -172,21 +197,15 @@ def start_round(request):
         return HttpResponseSeeOther(reverse('game:intentionality'))
     else:
         request.session['viewed'] = False
+
     if not opponent:
         return HttpResponseSeeOther(reverse('game:questionnaire'))
 
+    if is_first_subround(round_number) and not round_number in request.session.get('viewed_intentionality', []):
+        return HttpResponseSeeOther(reverse('game:intentionality'))
+
     return render(request, 'game/start_round.html',
                   {'round_number': round_number, 'opponent': opponent, 'picture': opponent.picture + '.jpg'})
-
-@require_GET
-def intentionality(request):
-    player, opponent, round_number = get_round_details(request.session)
-    form = ReadForm()    
-    if request.GET.get('checked'):
-        return HttpResponseSeeOther(reverse('game:start_round'))
-    
-    #XXX: randomize intentionality?
-    return render(request, 'game/intentionality.html', {'intentionality': (round_number==1), 'form': form})
 
 @require_http_methods(["GET", "POST"])
 def play_round(request):
@@ -197,7 +216,8 @@ def play_round(request):
         return HttpResponseSeeOther(reverse('game:start_round'))
 
     amount_offered = get_or_create_offer(request.session, player)
-    round = Round(player=player, opponent=opponent, amount_offered=amount_offered)
+    round = Round(player=player, opponent=opponent, amount_offered=amount_offered,
+                  is_intentional=(round_number <= (NUM_ROUNDS / 2)))
     if request.method == 'GET':
         form = OfferAcceptanceForm(instance=round)
     else:
@@ -223,7 +243,7 @@ def play_round(request):
 @require_GET
 def end_round(request):
     player, opponent, round_number = get_round_details(request.session)
-    round = Round.objects.get(player=player, opponent=opponent)
+    round = Round.objects.get(player=player, opponent=opponent) # TODO: fix filter
     logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
     del request.session['opponent_id']
     return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})

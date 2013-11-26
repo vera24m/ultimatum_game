@@ -1,0 +1,278 @@
+[
+    {
+        "fields": {}, 
+        "model": "game.kind", 
+        "pk": "c"
+    }, 
+    {
+        "fields": {}, 
+        "model": "game.kind", 
+        "pk": "h"
+    }, 
+    {
+        "fields": {}, 
+        "model": "game.kind", 
+        "pk": "n"
+    }, 
+    {
+        "fields": {}, 
+        "model": "game.kind", 
+        "pk": "r"
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_1"
+        }, 
+        "model": "game.opponent", 
+        "pk": 1
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_2"
+        }, 
+        "model": "game.opponent", 
+        "pk": 2
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_3"
+        }, 
+        "model": "game.opponent", 
+        "pk": 3
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_4"
+        }, 
+        "model": "game.opponent", 
+        "pk": 4
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_5"
+        }, 
+        "model": "game.opponent", 
+        "pk": 5
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_6"
+        }, 
+        "model": "game.opponent", 
+        "pk": 6
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_7"
+        }, 
+        "model": "game.opponent", 
+        "pk": 7
+    }, 
+    {
+        "fields": {
+            "kind": "c", 
+            "picture": "c_8"
+        }, 
+        "model": "game.opponent", 
+        "pk": 8
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_1"
+        }, 
+        "model": "game.opponent", 
+        "pk": 9
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_2"
+        }, 
+        "model": "game.opponent", 
+        "pk": 10
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_3"
+        }, 
+        "model": "game.opponent", 
+        "pk": 11
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_4"
+        }, 
+        "model": "game.opponent", 
+        "pk": 12
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_5"
+        }, 
+        "model": "game.opponent", 
+        "pk": 13
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_6"
+        }, 
+        "model": "game.opponent", 
+        "pk": 14
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_7"
+        }, 
+        "model": "game.opponent", 
+        "pk": 15
+    }, 
+    {
+        "fields": {
+            "kind": "h", 
+            "picture": "h_8"
+        }, 
+        "model": "game.opponent", 
+        "pk": 16
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_1"
+        }, 
+        "model": "game.opponent", 
+        "pk": 17
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_2"
+        }, 
+        "model": "game.opponent", 
+        "pk": 18
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_3"
+        }, 
+        "model": "game.opponent", 
+        "pk": 19
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_4"
+        }, 
+        "model": "game.opponent", 
+        "pk": 20
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_5"
+        }, 
+        "model": "game.opponent", 
+        "pk": 21
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_6"
+        }, 
+        "model": "game.opponent", 
+        "pk": 22
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_7"
+        }, 
+        "model": "game.opponent", 
+        "pk": 23
+    }, 
+    {
+        "fields": {
+            "kind": "n", 
+            "picture": "n_8"
+        }, 
+        "model": "game.opponent", 
+        "pk": 24
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_1"
+        }, 
+        "model": "game.opponent", 
+        "pk": 25
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_2"
+        }, 
+        "model": "game.opponent", 
+        "pk": 26
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_3"
+        }, 
+        "model": "game.opponent", 
+        "pk": 27
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_4"
+        }, 
+        "model": "game.opponent", 
+        "pk": 28
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_5"
+        }, 
+        "model": "game.opponent", 
+        "pk": 29
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_6"
+        }, 
+        "model": "game.opponent", 
+        "pk": 30
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_7"
+        }, 
+        "model": "game.opponent", 
+        "pk": 31
+    }, 
+    {
+        "fields": {
+            "kind": "r", 
+            "picture": "r_8"
+        }, 
+        "model": "game.opponent", 
+        "pk": 32
+    }
+]

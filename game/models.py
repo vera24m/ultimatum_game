@@ -9,10 +9,12 @@ class Kind(models.Model):
     ID_HUMAN = 'h'
     ID_COMPUTER = 'c'
     ID_ROBOT = 'r'
+    ID_NONDETERMINISTIC= 'n'
     IDS = (
         (ID_HUMAN, 'Human'),
         (ID_COMPUTER, 'Computer'),
         (ID_ROBOT, 'Robot'),
+        (ID_NONDETERMINISTIC, 'Randomness'),
     )
 
     id = models.CharField(max_length=1, choices=IDS, primary_key=True)
@@ -55,6 +57,7 @@ class Round(models.Model):
     player = models.ForeignKey(Player)
     opponent = models.ForeignKey(Opponent)
     amount_offered = models.IntegerField()
+    is_intentional = models.BooleanField()
     accepted = models.BooleanField(choices=ACCEPT_CHOICES, default=None)
     time_elapsed = models.IntegerField(default=-1)
 
