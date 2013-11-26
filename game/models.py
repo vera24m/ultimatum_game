@@ -31,19 +31,27 @@ class Opponent(models.Model):
         return '<O(%s) %s>' % (self.kind, self.pk)
 
 class Player(models.Model):
-    MALE = 'm'
-    FEMALE = 'f'
+    MALE = False
+    FEMALE = True
     GENDER = (
         (MALE, 'Male'),
         (FEMALE, 'Female')
     )
+    
+    YES_NO = ((True, 'Yes'), (False, 'No'))
 
     registration_datetime = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(max_length=1, choices=GENDER)
     opponent_kind = models.ForeignKey(Kind)
     #opponents = models.ManyToManyField(Opponent)
     mturk_key = models.CharField(max_length=32, default=uuid1().hex, editable=False)
     instructions_time = models.IntegerField(default=-1)
+    
+    #gender = models.BooleanField(max_length=1, choices=GENDER)
+    hours_a_day_you_spend_behind_a_computer = models.CharField(max_length=3)
+    #robot_experience = models.BooleanField(choices=YES_NO)
+    #ultimatum_experience = models.BooleanField(choices=YES_NO)
+    age = models.CharField(max_length=3)
+    nationality = models.CharField(max_length=50)
 
     # XXX: Express that all opponents should be of the same kind.
 

@@ -20,3 +20,11 @@ class QuestionnaireForm(ModelForm):
 
 class ReadForm(Form):
     checked = BooleanField(label='Check this box if you have read this carefully')
+
+class DemographicForm(ModelForm):
+    class Meta:
+        model = Player
+        fields = ['hours_a_day_you_spend_behind_a_computer', 'age', 'nationality',
+                  #'gender', 'robot_experience', 'ultimatum_experience',
+                 ]
+        widgets = {'gender': RadioSelect, 'robot_experience': RadioSelect, 'ultimatum_experience': RadioSelect}

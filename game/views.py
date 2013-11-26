@@ -9,7 +9,7 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
-from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm
+from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm, DemographicForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -279,7 +279,7 @@ def questionnaire(request):
     page = request.session.get('page', 1)
     
     if page > paginator.num_pages:
-        return HttpResponseSeeOther(reverse('game:thankyou'))
+        return HttpResponseSeeOther(reverse('game:demographic'))
     
     questions = paginator.page(page)
     answers = [Answer(player=player, question=q) for q in questions]
@@ -295,9 +295,9 @@ def questionnaire(request):
             page += 1
             request.session['page'] = page
             if not questions.has_next():
-                # Last page. Go to thank you page.
+                # Last page. Go to next page.
                 request.session['finished'] = True
-                return HttpResponseSeeOther(reverse('game:thankyou'))
+                return HttpResponseSeeOther(reverse('game:demographic'))
             else:
                 return HttpResponseSeeOther(reverse('game:questionnaire'))
     
@@ -309,6 +309,18 @@ def questionnaire(request):
     
     request.session['page'] = page
     return render(request, 'game/questionnaire.html', {'forms': forms, 'questions_forms': questions_forms})
+
+@require_http_methods(["GET", "POST"])
+def demographic(request):
+    player, opponent, round_number = get_round_details(request.session)
+    if request.method == 'GET':
+        form = DemographicForm(instance=player)
+    else:
+        form = DemographicForm(request.POST, instance=player)
+        if form.is_valid():
+            form.save()
+            return HttpResponseSeeOther(reverse('game:thankyou'))
+    return render(request, 'game/demographic.html', {'form': form})
 
 @require_GET
 def thankyou(request):

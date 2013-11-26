@@ -1,0 +1,11 @@
+{% include "game/header.html" %}
+
+<h1>Demographic questions</h1>
+<p>Please fill in the following personal details.</p>
+<form action="{% url 'game:demographic' %}" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+ <input type="submit" value="Submit" />
+</form>
+
+{% include "game/footer.html" %}
