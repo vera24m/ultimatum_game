@@ -9,7 +9,7 @@ class Kind(models.Model):
     ID_HUMAN = 'h'
     ID_COMPUTER = 'c'
     ID_ROBOT = 'r'
-    ID_NONDETERMINISTIC= 'n'
+    ID_NONDETERMINISTIC = 'n'
     IDS = (
         (ID_HUMAN, 'Human'),
         (ID_COMPUTER, 'Computer'),
