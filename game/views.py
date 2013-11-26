@@ -23,8 +23,6 @@ logger = logging.getLogger(__name__)
 
 # XXX: Must somehow ensure cookies are enabled?
 # XXX: Must showhow ensure javascript is enabled.
-# XXX: Must keep track of response times. Augment Round model.
-# XXX: We should enforce that the offer is uncovered.
 # XXX: Should keep offer displayed once it's been uncovered. Timer must not be
 #      reset.
 
@@ -88,13 +86,13 @@ def create_opponent(session, player):
 
     return opponent
 
-def create_intent(session, player, round_number):
+def create_intent(session, player):
     choice = session.get('intent', random.choice([True, False]))
     session['intent'] = choice
 
     return choice
 
-def get_or_create_offer(session, player):
+def get_or_create_offer(session, player, opponent):
     offer = session.get('amount_offered', None)
     if offer:
         # Already made an offer, but it was not yet accepted.
@@ -107,11 +105,17 @@ def get_or_create_offer(session, player):
     # or greater than the number of available opponents, there's no problem.
     # (Of course, during statistical analysis one must keep in mind that
     # players did not receive exactly the same offers.)
-    available_offers = [10, 10, 20, 20, 30, 30, 50, 50]
-    assert len(available_offers) == NUM_ROUNDS
-
-    for r in Round.objects.filter(player=player):
+    if str(opponent.kind) != 'Randomness':
+        available_offers = [10, 20, 30, 50]
+        assert len(available_offers) * 2 == NUM_ROUNDS
+    else:
+        available_offers = [10, 10, 20, 20, 30, 30, 50, 50]
+        assert len(available_offers)  == NUM_ROUNDS
+        session['intent'] = False
+        
+    for r in Round.objects.filter(player=player, is_intentional=session['intent']):
         available_offers.remove(r.amount_offered)
+
 
     # XXX make nicer.
     assert available_offers
@@ -158,8 +162,17 @@ def start_game(request):
 @require_GET
 def view_instructions(request):
     player = get_or_create_player(request.session)
+    if str(player.opponent_kind) == 'Randomness':
+        page = 'game:no_player'
+    else:
+        page = 'game:intentionality'
+
     return render(request, 'game/view_instructions.html',
-                  {'opponent_kind': str(player.opponent_kind)})
+                  {'opponent_kind': str(player.opponent_kind),
+                    'page' : page})
+@require_GET
+def no_player(request):
+    return render(request, 'game/no_player.html', {})
 
 @require_http_methods(["GET", "POST"])
 def intentionality(request):
@@ -174,11 +187,16 @@ def intentionality(request):
     if request.method == 'POST':
         request.session['viewed_intentionality'] += [round_number]
         return HttpResponseSeeOther(reverse('game:start_round'))
-    choice = create_intent(request.session, player, round_number)
-    if (round_number == 1): 
-        choice = not choice
     
-    #XXX: randomize intentionality?
+    choice = create_intent(request.session, player)
+    
+    if (round_number != 1):
+        visited_intent = request.session.get('visited_intent', False)
+        if not visited_intent:
+            choice = not choice
+            request.session['intent'] = choice
+            request.session['visited_intent'] = True
+    
     return render(request, 'game/intentionality.html',
                   {'intentionality': choice})
 
@@ -188,8 +206,8 @@ def start_round(request):
 
     if not opponent:
         return HttpResponseSeeOther(reverse('game:questionnaire'))
-
-    if is_first_subround(round_number) and not round_number in request.session.get('viewed_intentionality', []):
+         
+    if is_first_subround(round_number) and not round_number in request.session.get('viewed_intentionality', []) and not str(opponent.kind) == 'Randomness':
         return HttpResponseSeeOther(reverse('game:intentionality'))
 
     return render(request, 'game/start_round.html',
@@ -203,9 +221,9 @@ def play_round(request):
         # happen first.
         return HttpResponseSeeOther(reverse('game:start_round'))
 
-    amount_offered = get_or_create_offer(request.session, player)
+    amount_offered = get_or_create_offer(request.session, player, opponent)
     round = Round(player=player, opponent=opponent, amount_offered=amount_offered,
-                  is_intentional=(round_number <= (NUM_ROUNDS / 2)))
+                  is_intentional=(request.session['intent']))
     if request.method == 'GET':
         form = OfferAcceptanceForm(instance=round)
     else:
