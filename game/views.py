@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from django.core.paginator import Paginator, PageNotAnInteger
 
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
-from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm, MturkForm
+from game.forms import OfferAcceptanceForm, QuestionnaireForm
 
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
@@ -153,9 +153,7 @@ def is_first_subround(round_number):
 
 @require_GET
 def start_game(request):
-    #XXX: store results!
-    form = MturkForm(request.GET)
-    return render(request, 'game/start_game.html', {'mturk': form})
+    return render(request, 'game/start_game.html', {})
 
 @require_GET
 def view_instructions(request):
@@ -166,10 +164,6 @@ def view_instructions(request):
 @require_http_methods(["GET", "POST"])
 def intentionality(request):
     player, opponent, round_number = get_round_details(request.session)
-    
-    form = ReadForm()    
-    if request.POST.get('checked'):
-        return HttpResponseSeeOther(reverse('game:start_round'))
 
     if not is_first_subround(round_number):
         return HttpResponseSeeOther(reverse('game:start_round'))
@@ -186,7 +180,7 @@ def intentionality(request):
     
     #XXX: randomize intentionality?
     return render(request, 'game/intentionality.html',
-                  {'intentionality': choice, 'form': form})
+                  {'intentionality': choice})
 
 @require_GET
 def start_round(request):
@@ -237,7 +231,7 @@ def play_round(request):
 @require_GET
 def end_round(request):
     player, opponent, round_number = get_round_details(request.session)
-    round = Round.objects.get(player=player, opponent=opponent)
+    round = Round.objects.get(player=player, opponent=opponent) # TODO: fix filter
     logger.debug('offered: %s, accepted: %s' % (str(round.amount_offered), str(round.accepted)))
     del request.session['opponent_id']
     return render(request, 'game/end_round.html', {'amount_offered': round.amount_offered, 'accepted': round.accepted})
