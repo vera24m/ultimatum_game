@@ -7,7 +7,7 @@
   {{ form.non_field_errors }}
   <div class="questionnaire">
   {% for t in questions_forms %}
-    <h3>{{ t.0.text }}</h3>
+    <h4>{{ t.0.text }}</h4>
     {{ t.1.option }}
   {% endfor %}
   </div>

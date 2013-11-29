@@ -6,9 +6,9 @@
 <h1>Round has ended</h1>
 <p>This concludes the current round.</p>
 {% if accepted %}
-<p>You have gained {{ amount_offered }} MU.</p>
+<p>You chose to accept. Therefore, you have gained {{ amount_offered }} MU.</p>
 {% else %}
-<p>You have not gained any money units this round.</p>
+<p>You chose to reject. Therefore, you have not gained any money units this round.</p>
 {% endif %}
 <p>Click the button below to proceed.</p>
 <form action="{% url 'game:start_round' %}" method="get">
