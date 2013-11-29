@@ -158,11 +158,17 @@ def is_first_subround(round_number):
 
 @require_GET
 def start_game(request):
+    request.session['start_time'] = time.time()
     return render(request, 'game/start_game.html', {})
 
 @require_GET
 def view_instructions(request):
     player = get_or_create_player(request.session)
+    
+    if player.instructions_time == -1:
+        elapsed = (time.time() - request.session.get('start_time')) * 1000
+        player.start_time = int(round(elapsed))
+        player.save()
 
     request.session['instructions_time'] = time.time()
 
@@ -281,6 +287,9 @@ def questionnaire(request):
     if page > paginator.num_pages:
         return HttpResponseSeeOther(reverse('game:demographic'))
     
+    if page == 1:
+        request.session['questionnaire_time'] = time.time()
+    
     questions = paginator.page(page)
     answers = [Answer(player=player, question=q) for q in questions]
     if request.method == 'GET':
@@ -297,6 +306,10 @@ def questionnaire(request):
             if not questions.has_next():
                 # Last page. Go to next page.
                 request.session['finished'] = True
+                if player.questionnaire_time == -1:
+                    elapsed = (time.time() - request.session.get('questionnaire_time')) * 1000
+                    player.questionnaire_time = int(round(elapsed))
+                    player.save()
                 return HttpResponseSeeOther(reverse('game:demographic'))
             else:
                 return HttpResponseSeeOther(reverse('game:questionnaire'))

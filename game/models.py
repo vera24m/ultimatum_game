@@ -44,7 +44,9 @@ class Player(models.Model):
     opponent_kind = models.ForeignKey(Kind)
     #opponents = models.ManyToManyField(Opponent)
     mturk_key = models.CharField(max_length=32, default=uuid1().hex, editable=False)
+    start_time = models.IntegerField(default=-1)
     instructions_time = models.IntegerField(default=-1)
+    questionnaire_time = models.IntegerField(default=-1)
     
     #gender = models.BooleanField(max_length=1, choices=GENDER)
     hours_a_day_you_spend_behind_a_computer = models.CharField(max_length=3)
