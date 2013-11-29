@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Experiment: Let's play a game!</title>
     <link rel="icon" type="image/x-icon" href="{% static "game/favicon.ico" %}" />
-    <link rel="stylesheet" href="{% static "game/styles2.css" %}"/>
+    <link rel="stylesheet" href="{% static "game/style2.css" %}"/>
   </head>
   <body>
 

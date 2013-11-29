@@ -1,0 +1,12 @@
+body {
+  background-color: #EEE;
+  width: 640px;
+}
+
+#questionnairemenu ul{
+  list-style: none;
+}
+
+#questionnairemenu li{
+  display: inline;
+}

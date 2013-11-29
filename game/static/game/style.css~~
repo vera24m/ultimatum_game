@@ -28,6 +28,10 @@ body {
   display: none;
 }
 
+form {
+  margin: 2em auto 2em auto;
+  text-align: center;
+}
 .errorlist {
   color: red;
   margin: 0em;
@@ -41,5 +45,19 @@ body {
   display: inline;
   list-style-type: none;
   padding: 1em;
+}
+
+.questionnaire * {
+  display: inline;
+  list-style-type: none;
+  align: left;
+}
+
+#questionnairemenu ul{
+  list-style: none;
+}
+
+#questionnairemenu li{
+  display: inline;
 }
 
