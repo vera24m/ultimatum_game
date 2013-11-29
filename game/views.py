@@ -211,7 +211,7 @@ def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
 
     if player.instructions_time == -1:
-        elapsed = time.time() - request.session.get('instructions_time')
+        elapsed = (time.time() - request.session.get('instructions_time')) * 1000
         player.instructions_time = int(round(elapsed))
         player.save()
     #if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
