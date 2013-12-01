@@ -82,7 +82,7 @@ def create_opponent(session, player):
 
     # XXX: Might have to select a RANDOM opponent; see
     # /opt/lampp/htdocs/ultimatum/index.php
-    opponent = available_opponents[0]
+    opponent = random.choice(available_opponents)
     session['opponent_id'] = opponent.id
 
     return opponent
