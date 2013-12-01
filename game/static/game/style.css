@@ -35,6 +35,7 @@ body {
   list-style-type: none;
 }
 .offer_response {
+  text-align: center;
   padding: 1em;
 }
 .offer_response * {
