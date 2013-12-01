@@ -3,6 +3,7 @@ import random
 import time
 
 from django.core.urlresolvers import reverse
+from django.db.models import Count, Min
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
@@ -48,17 +49,26 @@ class HttpResponseSeeOther(HttpResponseRedirect):
     status_code = 303
 
 def get_or_create_player(session):
-    # XXX: Something to consider: though randomness is probably "good enough",
-    # one could also check, for each kind of opponent, how  many players
-    # completed the game and questionnaire, then select the opponent kind for
-    # which the least amount of data has been collected so far.
     player, created = Player.objects.get_or_create(id=session.get('player_id', None),
-        defaults={'opponent_kind': random.choice(Kind.objects.all())})
+        defaults={'opponent_kind': select_opponent_kind_for_new_player()})
 
     if created:
         session['player_id'] = player.id
 
     return player
+
+def select_opponent_kind_for_new_player():
+    # XXX: We select the opponent kind that has been assigned to the least
+    # number of players. Note that *all* players are taken into consideration,
+    # including those that did not yet finish or "abandoned" the experiment.
+    # This is not optimal, but should converge to optimality in the limit. One
+    # advantage of this approach over an approach that takes historical game
+    # round data into account is that it has nicer characteristics if, after
+    # _some_ rounds have already been played, a large number of people all of a
+    # sudden start the experiment.
+    kinds = Kind.objects.annotate(num_players=Count('player'))
+    min_players = kinds.aggregate(min_players=Min('num_players'))['min_players']
+    return random.choice(kinds.filter(num_players=min_players))
 
 def get_opponent(session):
     # XXX: Use hasattr or something like that instead? If so, fix elsewhere as
@@ -82,7 +92,7 @@ def create_opponent(session, player):
 
     # XXX: Might have to select a RANDOM opponent; see
     # /opt/lampp/htdocs/ultimatum/index.php
-    opponent = available_opponents[0]
+    opponent = random.choice(available_opponents)
     session['opponent_id'] = opponent.id
 
     return opponent
