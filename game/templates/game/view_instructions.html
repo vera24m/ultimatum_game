@@ -2,10 +2,10 @@
 {% load staticfiles %}
 <h1>Let's play a game - game instructions</h1>
 
-<img src="{% static 'game/instructions/'|add:opponent_kind|add:'.png' %}" alt="photo">
+<div><p style="float: left; margin-right: 30px;"><img src="{% static 'game/instructions/'|add:opponent_kind|add:'.png' %}" alt="photo"></p>
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_gameinfo.php -->
-
+<br />
 <p>As mentioned on the previous page, the first part of this experiment consists of several rounds of a simple game. The game revolves around 'Money Units' ('MU'), the currency of the game.
 Two players take part in the game: you and your opponent. The objective for both players is to gather MU. You will play eight rounds in total and face a different opponent in each round.</p>
 
@@ -23,6 +23,8 @@ players, have any means of communicating with one another. What happens in each 
 therefore stands alone and cannot inﬂuence or be inﬂuenced by other game rounds.
 {{ page }}
 </p>
+</div>
+
 <em>Click 'Next page' to continue with the experiment and start the first round.</em>
 <form action="{% url page %}" method="get">
   <input type="submit" value="Next page" />
