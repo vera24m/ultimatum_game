@@ -2,12 +2,12 @@
 {% load staticfiles %}
 <h1>Let's play a game - game instructions</h1>
 
-<div><p style="float: left; margin-right: 30px;"><img src="{% static 'game/instructions/'|add:opponent_kind|add:'.png' %}" alt="photo"></p>
+<div><p style="float: left; margin-right: -80px;"><img src="{% static 'game/instructions/'|add:opponent_kind|add:'.png' %}" alt="photo" style="width: 80%; height: 80%" /></p>
 
 <!-- Include test from /opt/lampp/htdocs/ultimatum/letsplayagame_gameinfo.php -->
 <br />
 <p>As mentioned on the previous page, the first part of this experiment consists of several rounds of a simple game. The game revolves around 'Money Units' ('MU'), the currency of the game.
-Two players take part in the game: you and your opponent. The objective for both players is to gather MU. You will play eight rounds in total and face a different opponent in each round.</p>
+Two players take part in the game: you and your opponent. The objective for both players is to gather MU. You will play eight rounds in total and face a <emph>different</emph> opponent in each round.</p>
 
 <p>Each round consists of 3 steps:
 <ol>
@@ -21,7 +21,6 @@ propose a division of the available 100 MU between the players. <em>For instance
 <p>Note that you will only meet each of the opponents once and that neither you, nor the other
 players, have any means of communicating with one another. What happens in each round
 therefore stands alone and cannot inﬂuence or be inﬂuenced by other game rounds.
-{{ page }}
 </p>
 </div>
 
