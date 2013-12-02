@@ -8,5 +8,13 @@ body {
 }
 
 #questionnairemenu li{
-  display: inline;
+  display: inline-block;
+}
+
+.checkboxgroup{
+    display:inline-block;
+    text-align:center;
+}
+.checkboxgroup label {
+    display:block;
 }
