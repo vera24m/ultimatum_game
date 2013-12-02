@@ -12,6 +12,8 @@ from django.core.paginator import Paginator, PageNotAnInteger
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm, DemographicForm
 
+from uuid import uuid1
+
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
 # The number of rounds.
@@ -348,5 +350,8 @@ def demographic(request):
 @require_GET
 def thankyou(request):
     player, opponent, round_number = get_round_details(request.session)
+    if player.mturk_key == str(0):
+        player.mturk_key = uuid1().hex
+        player.save()
     key = player.mturk_key
     return render(request, 'game/thankyou.html', {'key': key})
