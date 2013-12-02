@@ -19,8 +19,8 @@
   {{ form.non_field_errors }}
   <ul id="questionnairemenu">
   {% for t in questions_forms %}
-    <li><strong>{{ t.0.text }}</strong></li>
-    {{ t.1.option }}<br>
+    <li><strong>{{ t.0.text }}</strong></li><p>
+    {{ t.1.option }}<br></p>
   {% endfor %}
   </ul>
   <input type="submit" value="Submit" />
