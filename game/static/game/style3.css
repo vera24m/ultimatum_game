@@ -2,7 +2,7 @@ body {
   background-color: #EEE;
   margin-left: auto;
   margin-right: auto;
-  width: 640px;
+  width: 1024px;
 }
 
 #offer_section {
@@ -44,7 +44,3 @@ body {
   padding: 1em;
 }
 
-form {
-  margin: 2em auto 2em auto;
-  text-align: center;
-}

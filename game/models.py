@@ -2,8 +2,13 @@ import logging
 from django.core.exceptions import ValidationError
 from django.db import models
 from uuid import uuid1
+import string
+import random
 
 logger = logging.getLogger(__name__)
+
+def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(size))
 
 class Kind(models.Model):
     ID_HUMAN = 'h'
@@ -43,8 +48,10 @@ class Player(models.Model):
     registration_datetime = models.DateTimeField(auto_now_add=True)
     opponent_kind = models.ForeignKey(Kind)
     #opponents = models.ManyToManyField(Opponent)
-    mturk_key = models.CharField(max_length=32, default=uuid1().hex, editable=False)
+    mturk_key = models.CharField(max_length=32, default=0, editable=False)
+    start_time = models.IntegerField(default=-1)
     instructions_time = models.IntegerField(default=-1)
+    questionnaire_time = models.IntegerField(default=-1)
     
     #gender = models.BooleanField(max_length=1, choices=GENDER)
     hours_a_day_you_spend_behind_a_computer = models.CharField(max_length=3)

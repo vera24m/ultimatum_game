@@ -47,9 +47,9 @@ for x in range(len(third_batch_questions)):
 
 fourth_batch_questions = ['Do you feel like your knowledge of the opponents\' appearance influenced your decisions in the game?', 'How motivated were you to earn as many Money Units as possible in the game?', 'Do you feel like emotions or other non-financial motivations influence your decisions in the game?',]
 
-fourth_batch_options = [['??', '??'], #TODO: replace by sensible options
+fourth_batch_options = [['Not influenced at all', 'Somewhat influenced', 'Fairly influenced', 'Very much'],
                        ['Extremely unmotivated', 'Moderately unmotivated', 'Slightly unmotivated', 'Neither unmotivated nor motivated', 'Slightly motivated', 'Moderately motivated', 'Extremely motivated',],
-                       ['etc'], #TODO: replace by sensible options
+                       ['Not influenced at all', 'Somewhat influenced', 'Fairly influenced', 'Very much'],
                       ]
 
 for x in range(len(fourth_batch_questions)):
@@ -60,8 +60,8 @@ fifth_batch_questions = ['Do you have any personal experience with robots (inclu
 fifth_batch_options = [['Yes', 'No'],
                        ['Yes', 'No'],
                        ['Male', 'Female'],
-                       ['etc'], #TODO: replace by sensible options
-                       ['etc'], #TODO: replace by sensible options
+                       ['Not at all religious', 'Somewhat religious', 'Fairly religious', 'Very religious',],
+                       ['Not at all spiritual', 'Somewhat spiritual', 'Fairly spiritual', 'Very spiritual',],
                       ]
 
 for x in range(len(fifth_batch_questions)):

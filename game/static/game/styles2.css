@@ -1,0 +1,20 @@
+body {
+  background-color: #EEE;
+  width: 1800px;
+}
+
+#questionnairemenu ul{
+  list-style: none;
+}
+
+#questionnairemenu li{
+  display: inline-block;
+}
+
+.checkboxgroup{
+    display:inline-block;
+    text-align:center;
+}
+.checkboxgroup label {
+    display:block;
+}

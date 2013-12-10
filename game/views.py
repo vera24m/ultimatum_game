@@ -12,6 +12,8 @@ from django.core.paginator import Paginator, PageNotAnInteger
 from game.models import Kind, Opponent, Player, Round, Question, Option, Answer
 from game.forms import OfferAcceptanceForm, QuestionnaireForm, ReadForm, DemographicForm
 
+from uuid import uuid1
+
 # The amount of "money units" available in each round.
 AMOUNT_AVAILABLE = 100
 # The number of rounds.
@@ -168,11 +170,17 @@ def is_first_subround(round_number):
 
 @require_GET
 def start_game(request):
+    request.session['start_time'] = time.time()
     return render(request, 'game/start_game.html', {})
 
 @require_GET
 def view_instructions(request):
     player = get_or_create_player(request.session)
+    
+    if player.instructions_time == -1:
+        elapsed = (time.time() - request.session.get('start_time')) * 1000
+        player.start_time = int(round(elapsed))
+        player.save()
 
     request.session['instructions_time'] = time.time()
 
@@ -221,7 +229,7 @@ def start_round(request):
     player, opponent, round_number = get_round_details(request.session, True)
 
     if player.instructions_time == -1:
-        elapsed = time.time() - request.session.get('instructions_time')
+        elapsed = (time.time() - request.session.get('instructions_time')) * 1000
         player.instructions_time = int(round(elapsed))
         player.save()
     #if round_number in {1, (NUM_ROUNDS/2)+1} and not request.session.get('viewed', False):
@@ -291,6 +299,9 @@ def questionnaire(request):
     if page > paginator.num_pages:
         return HttpResponseSeeOther(reverse('game:demographic'))
     
+    if page == 1:
+        request.session['questionnaire_time'] = time.time()
+    
     questions = paginator.page(page)
     answers = [Answer(player=player, question=q) for q in questions]
     if request.method == 'GET':
@@ -307,6 +318,10 @@ def questionnaire(request):
             if not questions.has_next():
                 # Last page. Go to next page.
                 request.session['finished'] = True
+                if player.questionnaire_time == -1:
+                    elapsed = (time.time() - request.session.get('questionnaire_time')) * 1000
+                    player.questionnaire_time = int(round(elapsed))
+                    player.save()
                 return HttpResponseSeeOther(reverse('game:demographic'))
             else:
                 return HttpResponseSeeOther(reverse('game:questionnaire'))
@@ -335,5 +350,8 @@ def demographic(request):
 @require_GET
 def thankyou(request):
     player, opponent, round_number = get_round_details(request.session)
+    if player.mturk_key == str(0):
+        player.mturk_key = uuid1().hex
+        player.save()
     key = player.mturk_key
     return render(request, 'game/thankyou.html', {'key': key})
